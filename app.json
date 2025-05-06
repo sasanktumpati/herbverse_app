@@ -8,13 +8,39 @@
     },
     "plugins": [
       [
-        "expo-router",
+        "expo-splash-screen",
         {
-          "origin": "https://n"
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/icon-black.png",
+          "dark": {
+            "image": "./assets/images/icon-white.png",
+            "backgroundColor": "#000000"
+          },
+          "imageWidth": 200
         }
+      ],
+      [
+        "expo-router"
       ]
     ],
     "name": "herbverse_app",
-    "slug": "herbverse_app"
+    "slug": "herbverse_app",
+    "android": {
+      "package": "com.sasanktumpati.herbverse_app",
+      "icon": "./assets/images/icon.png",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon-black.png",
+        "monochromeImage": "./assets/images/icon-black.png",
+        "backgroundImage": "./assets/images/icon-background.png",
+        "backgroundColor": "#000000"
+      },
+      "permissions": [
+        "INTERNET"
+      ]
+    },
+    "ios": {
+      "icon": "./assets/images/icon.png",
+      "bundleIdentifier": "com.sasanktumpati.herbverse-app"
+    }
   }
 }
