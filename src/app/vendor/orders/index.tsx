@@ -148,7 +148,7 @@ export default function VendorOrdersScreen() {
   
   if (isLoading && vendorOrders.length === 0 && !refreshing) {
     return (
-      <View style={{ paddingTop: top }} className="flex-1 items-center justify-center bg-herb-surface-alt">
+      <View className="flex-1 items-center justify-center bg-herb-surface-alt">
         <ActivityIndicator size="large" color="#2B4D3F" />
         <Text className="text-herb-muted font-poppins mt-2">Loading incoming orders...</Text>
       </View>
@@ -157,7 +157,7 @@ export default function VendorOrdersScreen() {
 
   if (error) {
     return (
-      <View style={{ paddingTop: top }} className="flex-1 items-center justify-center bg-herb-surface-alt px-5">
+      <View className="flex-1 items-center justify-center bg-herb-surface-alt px-5">
         <MaterialIcons name="error-outline" size={48} color="#F28C0F" />
         <Text className="text-xl font-poppins-semibold text-herb-error mt-3 text-center">Failed to Load Orders</Text>
         <Text className="text-herb-muted font-poppins text-center mt-1 mb-4">{error.message}</Text>

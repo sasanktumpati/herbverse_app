@@ -136,7 +136,7 @@ export default function VendorOrderDetailScreen() {
 
   if (isLoading && !order) {
     return (
-      <View style={{ paddingTop: top }} className="flex-1 items-center justify-center bg-herb-surface-alt">
+      <View className="flex-1 items-center justify-center bg-herb-surface-alt">
         <ActivityIndicator size="large" color="#2B4D3F" />
         <Text className="text-herb-muted font-poppins mt-2">Loading order details...</Text>
       </View>
@@ -145,7 +145,7 @@ export default function VendorOrderDetailScreen() {
 
   if (error && !order) {
     return (
-      <View style={{ paddingTop: top }} className="flex-1 items-center justify-center bg-herb-surface-alt px-5">
+      <View className="flex-1 items-center justify-center bg-herb-surface-alt px-5">
         <MaterialIcons name="error-outline" size={48} color="#F28C0F" />
         <Text className="text-xl font-poppins-semibold text-herb-error mt-3 text-center">Failed to Load Order</Text>
         <Text className="text-herb-muted font-poppins text-center mt-1 mb-4">{error.message}</Text>
@@ -158,7 +158,7 @@ export default function VendorOrderDetailScreen() {
   
   if (!order) {
      return (
-      <View style={{ paddingTop: top }} className="flex-1 items-center justify-center bg-herb-surface-alt px-5">
+      <View className="flex-1 items-center justify-center bg-herb-surface-alt px-5">
         <Ionicons name="document-text-outline" size={48} color="#8D978F" />
         <Text className="text-xl font-poppins-semibold text-herb-primaryDark mt-3 text-center">Order Not Found</Text>
         <Text className="text-herb-muted font-poppins text-center mt-1 mb-4">The requested order could not be found or is no longer available.</Text>
@@ -172,7 +172,7 @@ export default function VendorOrderDetailScreen() {
   return (
     <>
     <FocusAwareStatusBar />
-    <View style={{ flex: 1, paddingTop: top }} className="bg-herb-surface-alt">
+    <View style={{ flex: 1}} className="bg-herb-surface-alt">
       <Animated.View entering={FadeIn} className="px-5 pt-5 pb-4 bg-white shadow-sm">
         <View className="flex-row items-center mb-2">
           <Pressable onPress={() => router.back()} className="p-2 -ml-2 mr-2">

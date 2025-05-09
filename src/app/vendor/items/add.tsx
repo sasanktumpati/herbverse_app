@@ -76,7 +76,7 @@ export default function AddItemScreen() {
   return (
     <>
     <FocusAwareStatusBar />
-    <View style={{ flex: 1, paddingTop: top }} className="bg-herb-surface-alt">
+    <View style={{ flex: 1}} className="bg-herb-surface-alt">
       <View className="px-5 pt-5 pb-4 flex-row items-center bg-white shadow-sm">
         <Pressable onPress={() => router.back()} className="p-2 mr-2 -ml-2">
           <MaterialIcons name="arrow-back" size={26} color="#2B4D3F" />

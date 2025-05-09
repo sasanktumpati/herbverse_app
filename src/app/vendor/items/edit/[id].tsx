@@ -118,7 +118,7 @@ export default function EditItemScreen() {
 
   if (!item && (storeLoading || isLoading)) {
     return (
-      <View style={{ flex: 1, paddingTop: top, justifyContent: 'center', alignItems: 'center' }} className="bg-herb-surface-alt">
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} className="bg-herb-surface-alt">
         <ActivityIndicator size="large" color="#2B4D3F" />
         <Text className="text-herb-muted font-poppins mt-2">Loading item details...</Text>
       </View>
@@ -127,7 +127,7 @@ export default function EditItemScreen() {
   
   if (!item) { 
      return (
-      <View style={{ flex: 1, paddingTop: top, justifyContent: 'center', alignItems: 'center' }} className="bg-herb-surface-alt">
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} className="bg-herb-surface-alt">
         <Text className="text-herb-error font-poppins">Item not found.</Text>
       </View>
     );
@@ -137,7 +137,7 @@ export default function EditItemScreen() {
   return (
     <>
     <FocusAwareStatusBar />
-    <View style={{ flex: 1, paddingTop: top }} className="bg-herb-surface-alt">
+    <View style={{ flex: 1}} className="bg-herb-surface-alt">
       <View className="px-5 pt-5 pb-4 flex-row items-center bg-white shadow-sm">
         <Pressable onPress={() => router.back()} className="p-2 mr-2 -ml-2">
           <MaterialIcons name="arrow-back" size={26} color="#2B4D3F" />
