@@ -21,7 +21,7 @@ const WellnessTips: React.FC = () => {
         >
           <Image
             source={{
-              uri: 'https://images.unsplash.com/photo-1533792344354-ed5e8fc12494?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+              uri: 'https://images.unsplash.com/photo-1715798901309-1636b3f7fb83?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
             }}
             className="absolute top-0 left-0 right-0 bottom-0 opacity-25"
             resizeMode="cover"
