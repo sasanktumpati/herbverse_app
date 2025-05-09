@@ -20,6 +20,7 @@ import PopularHerbsSection from '../components/home/PopularHerbsSection';
 import RecentOrderSection from '../components/home/RecentOrderSection';
 import WellnessTips from '../components/home/WellnessTips';
 import { useItemsStore, useOrdersStore, useAuthStore } from '@/stores';
+import { FocusAwareStatusBar } from '@/components/common/status-bar';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -80,8 +81,7 @@ export default function HomeScreen() {
 
   return (
     <View className="flex-1 bg-herb-background">
-      <StatusBar style="dark" translucent backgroundColor="transparent" />
-      
+      <FocusAwareStatusBar/>
       <Animated.View 
         style={[
           styles.header, 
@@ -134,7 +134,7 @@ export default function HomeScreen() {
           { useNativeDriver: true }
         )}
         scrollEventThrottle={16}
-        className="bg-herb-surface"
+        className="bg-herb-background"
       >
         <View className="pt-2"> 
           <View style={{ paddingTop: top + 20 }} className="px-5">

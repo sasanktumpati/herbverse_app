@@ -6,11 +6,10 @@ import useCartStore, { Cart, CartItem } from './cartStore';
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'failed';
 
 export interface OrderItem extends CartItem { // Essentially a cart item at the time of order
-  // Potentially add priceAtOrder if prices can change and you need to lock it
 }
 
 export interface Order {
-  id: string; // Firestore document ID
+  id: string; 
   userId: string;
   items: OrderItem[];
   totalPrice: number;
@@ -18,23 +17,21 @@ export interface Order {
   status: OrderStatus;
   createdAt: FirebaseFirestoreTypes.Timestamp;
   updatedAt: FirebaseFirestoreTypes.Timestamp;
-  orderNumber?: string; // User-friendly order identifier
+  orderNumber?: string;
 }
 
 interface OrdersState {
   orders: Order[];
   isLoading: boolean;
   error: Error | null;
-  currentOrder: Order | null; // For tracking a newly created or viewed order
+  currentOrder: Order | null; 
   createOrderFromCart: () => Promise<string | null>;
   fetchUserOrders: () => Promise<void>;
-  listenToUserOrders: () => (() => void) | undefined; // Returns an unsubscribe function
+  listenToUserOrders: () => (() => void) | undefined; 
   clearOrders: () => void;
-  // Future: updateOrderStatus (admin), cancelOrder (user/admin)
 }
 
 const generateOrderNumber = async () => {
-  // This is a simple counter. For production, you might want a more robust system.
   const counterRef = firestore().collection('internal').doc('orderCounter');
   return firestore().runTransaction(async transaction => {
     const counterDoc = await transaction.get(counterRef);
@@ -103,8 +100,6 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
   fetchUserOrders: async () => {
     const { user } = useAuthStore.getState();
     if (!user) {
-      // set({ error: new Error("User not authenticated for fetching orders"), isLoading: false });
-      // It's better to just clear orders if user is not available
       set({ orders: [], isLoading: false });
       return;
     }
@@ -113,13 +108,9 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
       const ordersSnapshot = await firestore()
         .collection('orders')
         .where('userId', '==', user.uid)
-        .orderBy('createdAt', 'desc')
         .get();
-      
-      const userOrders = ordersSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Order[];
+      let userOrders = ordersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Order));
+      userOrders.sort((a, b) => b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime());
       set({ orders: userOrders, isLoading: false });
     } catch (e: any) {
       set({ error: e, isLoading: false });
@@ -134,16 +125,14 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
       return undefined;
     }
     set({ isLoading: true });
+
     const unsubscribe = firestore()
       .collection('orders')
       .where('userId', '==', user.uid)
-      .orderBy('createdAt', 'desc')
       .onSnapshot(
         (snapshot) => {
-          const userOrders = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as Order[];
+          let userOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Order));
+          userOrders.sort((a, b) => b.createdAt.toDate().getTime() - a.createdAt.toDate().getTime());
           set({ orders: userOrders, isLoading: false, error: null });
         },
         (e) => {
@@ -151,7 +140,7 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
           set({ error: e, isLoading: false });
         }
       );
-    return unsubscribe; 
+    return unsubscribe;  
   },
 
   clearOrders: () => {
@@ -166,12 +155,12 @@ useAuthStore.subscribe((state, prevState) => {
   const { user } = state;
   const { listenToUserOrders, clearOrders } = useOrdersStore.getState();
 
-  if (user && !prevState.user) { // User logged in
+  if (user && !prevState.user) {
     if (ordersUnsubscribe) {
-        ordersUnsubscribe(); // Unsubscribe from previous listener if any
+        ordersUnsubscribe(); 
     }
     ordersUnsubscribe = listenToUserOrders();
-  } else if (!user && prevState.user) { // User logged out
+  } else if (!user && prevState.user) { 
     if (ordersUnsubscribe) {
       ordersUnsubscribe();
       ordersUnsubscribe = undefined;
@@ -180,4 +169,4 @@ useAuthStore.subscribe((state, prevState) => {
   }
 });
 
-export default useOrdersStore; 
+export default useOrdersStore;

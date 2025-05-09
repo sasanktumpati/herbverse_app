@@ -9,11 +9,13 @@ export interface UserProfile {
   photoURL?: string;
   createdAt: FirebaseFirestoreTypes.Timestamp;
   updatedAt?: FirebaseFirestoreTypes.Timestamp;
+  isVendor?: boolean; 
 }
 
 interface AuthState {
   user: FirebaseAuthTypes.User | null;
   profile: UserProfile | null;
+  isVendor: boolean;
   loadingStates: {
     auth: boolean;
     signIn: boolean;
@@ -33,7 +35,7 @@ interface AuthState {
   initializing: boolean;
   authListener: (() => void) | null;
   signInWithEmail: (email: string, pass: string) => Promise<void>;
-  signUpWithEmail: (email: string, pass: string, displayName: string) => Promise<void>;
+  signUpWithEmail: (email: string, pass: string, displayName: string, isVendor: boolean) => Promise<void>; // Added isVendor parameter
   signOut: () => Promise<void>;
   setUserAndProfile: (user: FirebaseAuthTypes.User | null, profile?: UserProfile | null) => void;
   fetchUserProfile: (uid: string) => Promise<UserProfile | null>;
@@ -46,6 +48,7 @@ interface AuthState {
 const authStoreCreator: StateCreator<AuthState> = (set, get) => ({
   user: null,
   profile: null,
+  isVendor: false,
   loadingStates: {
     auth: true,
     signIn: false,
@@ -69,6 +72,7 @@ const authStoreCreator: StateCreator<AuthState> = (set, get) => ({
     set({ 
       user, 
       profile: user ? profile : null, 
+      isVendor: user && profile ? !!profile.isVendor : false, // Use the formalized isVendor field
       initializing: false,
       loadingStates: {
         ...get().loadingStates,
@@ -170,7 +174,7 @@ const authStoreCreator: StateCreator<AuthState> = (set, get) => ({
     }
   },
 
-  signUpWithEmail: async (email: string, pass: string, displayName: string) => {
+  signUpWithEmail: async (email: string, pass: string, displayName: string, isVendor: boolean) => { // Added isVendor parameter
     set(state => ({
       loadingStates: {
         ...state.loadingStates,
@@ -191,6 +195,7 @@ const authStoreCreator: StateCreator<AuthState> = (set, get) => ({
           email: userCredential.user.email,
           displayName: displayName,
           photoURL: userCredential.user.photoURL,
+          isVendor: isVendor, // Persist isVendor status
           createdAt: firestore.FieldValue.serverTimestamp(),
         };
         await firestore().collection('users').doc(userCredential.user.uid).set(userProfileData);
@@ -274,12 +279,20 @@ const authStoreCreator: StateCreator<AuthState> = (set, get) => ({
     
     try {
       await auth().signOut();
-      set(state => ({
-        loadingStates: {
-          ...state.loadingStates,
-          signOut: false
+      set({ 
+        user: null, 
+        profile: null, 
+        isVendor: false,
+        loadingStates: { 
+          ...get().loadingStates, 
+          signOut: false, 
+          auth: false 
+        },
+        errors: { 
+          ...get().errors, 
+          signOut: null 
         }
-      }));
+      });
     } catch (e: any) {
       set(state => ({
         errors: {

@@ -2,7 +2,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, ScrollView, Text, View, BackHandler, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import StatusBadge from '../../components/ui/StatusBadge';
 import useOrdersStore, { Order, OrderItem } from '../../stores/ordersStore';
@@ -18,6 +18,17 @@ const OrderDetailScreen = () => {
   const { top, bottom } = useSafeAreaInsets();
   const { orders, isLoading: ordersLoading, error: ordersError, fetchUserOrders } = useOrdersStore();
   const [order, setOrder] = useState<Order | null | undefined>(undefined);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      const onBackPress = () => {
+        router.push('/(tabs)/orders');
+        return true;
+      };
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => subscription.remove();
+    }
+  }, [router]);
 
   useEffect(() => {
     if (orderId) {
@@ -79,7 +90,7 @@ const OrderDetailScreen = () => {
         <Text className="text-herb-muted font-poppins text-center mt-1 mb-4">
           The requested order could not be found. It might have been removed or the ID is incorrect.
         </Text>
-        <Pressable onPress={() => router.back()} className="bg-herb-primary py-3 px-8 rounded-2xl shadow-md active:bg-herb-primaryDark">
+        <Pressable onPress={() => router.push('/(tabs)/orders')} className="bg-herb-primary py-3 px-8 rounded-2xl shadow-md active:bg-herb-primaryDark">
           <Text className="text-white font-poppins-semibold text-lg">Go Back</Text>
         </Pressable>
       </View>
@@ -167,13 +178,20 @@ const OrderDetailScreen = () => {
   return (
     <>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
-      <Stack.Screen options={{ 
-        title: screenTitle,
-        headerStyle: { backgroundColor: '#F7F9F7' },
-        headerShadowVisible: false,
-        headerTitleStyle: { fontFamily: 'Poppins_600SemiBold', color: '#1E352C'},
-        headerTintColor: '#1E352C',
-      }} />
+      <Stack.Screen
+        options={{
+          title: screenTitle,
+          headerStyle: { backgroundColor: '#F7F9F7' },
+          headerShadowVisible: false,
+          headerTitleStyle: { fontFamily: 'Poppins_600SemiBold', color: '#1E352C' },
+          headerTintColor: '#1E352C',
+          headerLeft: () => (
+            <Pressable onPress={() => router.push('/(tabs)/orders')} style={{ marginLeft: 12 }}>
+              <Ionicons name="arrow-back" size={24} color="#1E352C" />
+            </Pressable>
+          ),
+        }}
+      />
       {content}
     </>
   );

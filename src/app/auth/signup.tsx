@@ -32,7 +32,7 @@ export default function SignupScreen() {
     loadingStates, 
     errors, 
     clearAuthError, 
-    user 
+    user
   } = useAuthStore();
 
   const [name, setName] = useState('');
@@ -40,6 +40,7 @@ export default function SignupScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [isSigningUpAsVendor, setIsSigningUpAsVendor] = useState(false);
 
   const errorShake = useSharedValue(0);
 
@@ -112,7 +113,7 @@ export default function SignupScreen() {
     }
     
     Keyboard.dismiss();
-    await signUpWithEmail(email, password, name);
+    await signUpWithEmail(email, password, name, isSigningUpAsVendor);
   };
   
   const handleSocialSignup = (provider: string) => {
@@ -175,6 +176,21 @@ export default function SignupScreen() {
             ]}
             className="w-full"
           >
+            <View className="flex-row items-center justify-center mb-6">
+              <TouchableOpacity
+                onPress={() => setIsSigningUpAsVendor(false)}
+                className={`py-2 px-4 rounded-lg mr-2 ${!isSigningUpAsVendor ? 'bg-herb-primary' : 'bg-gray-200'}`}
+              >
+                <Text className={`${!isSigningUpAsVendor ? 'text-white' : 'text-gray-700'} font-poppins-medium`}>Sign up as User</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setIsSigningUpAsVendor(true)}
+                className={`py-2 px-4 rounded-lg ${isSigningUpAsVendor ? 'bg-herb-secondary' : 'bg-gray-200'}`}
+              >
+                <Text className={`${isSigningUpAsVendor ? 'text-white' : 'text-gray-700'} font-poppins-medium`}>Sign up as Vendor</Text>
+              </TouchableOpacity>
+            </View>
+
             <View className="mb-6">
               <Text className="text-sm font-semibold text-herb-textPrimary mb-2 ml-1">Full Name</Text>
               <View className="flex-row items-center border border-herb-divider rounded-xl px-4 h-14 bg-herb-bgInput focus-within:border-herb-primary transition-all duration-150">

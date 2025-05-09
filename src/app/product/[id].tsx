@@ -9,7 +9,9 @@ import {
   ScrollView,
   Text,
   useWindowDimensions,
-  View
+  View,
+  BackHandler,
+  Platform
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Header from '../../components/header';
@@ -34,6 +36,17 @@ export default function ProductDetailScreen() {
       fetchItems();
     }
   }, [items.length, fetchItems]);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      const onBackPress = () => {
+        router.push('/(tabs)/explore');
+        return true;
+      };
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => subscription.remove();
+    }
+  }, [router]);
   
   const handleAddToCart = async () => {
     if (!item) return;
@@ -66,7 +79,7 @@ export default function ProductDetailScreen() {
   if (isItemsLoading || !item) {
     return (
       <View className="flex-1 bg-herb-background">
-        <Header title="Product Details" showBack />
+        <Header title="Product Details" showBack backAction={() => router.push('/(tabs)/explore')} />
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#2B4D3F" />
           <Text className="text-herb-muted font-poppins mt-3">Loading product details...</Text>
@@ -81,7 +94,7 @@ export default function ProductDetailScreen() {
       <View className="flex-1 bg-herb-background">
         <Header 
           title="Product Details" 
-          showBack 
+          showBack backAction={() => router.push('/(tabs)/explore')} 
           rightIcon="share" 
           rightAction={() => showAlert({ title: "Share", message: "Sharing feature coming soon!", type: 'info', buttons: [{ text: "OK" }] })} 
         />

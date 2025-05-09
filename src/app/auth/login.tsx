@@ -32,14 +32,15 @@ export default function LoginScreen() {
     loadingStates,
     errors, 
     clearAuthError, 
-    user 
+    user,
+    setUserAndProfile 
   } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-  
+
   const errorShake = useSharedValue(0);
 
   useEffect(() => {
@@ -84,7 +85,7 @@ export default function LoginScreen() {
     }
   }, [errors.signIn, errorShake]);
 
-  const handleLogin = async () => {
+  const handleLogin = async (asVendor = false) => {
     if (!email || !password) {
       errorShake.value = withSequence(
         withTiming(-10, { duration: 100 }),
@@ -98,6 +99,18 @@ export default function LoginScreen() {
     
     Keyboard.dismiss();
     await signInWithEmail(email, password);
+    if (asVendor) {
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser) {
+        
+        await useAuthStore.getState().updateUserProfile(currentUser.uid, { isVendor: true });
+        
+        const userProfile = await useAuthStore.getState().fetchUserProfile(currentUser.uid);
+        if (userProfile) {
+          useAuthStore.getState().setUserAndProfile(currentUser, userProfile);
+        }
+      }
+    }
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -227,7 +240,7 @@ export default function LoginScreen() {
 
             <TouchableOpacity
               className={`bg-herb-primary h-14 rounded-xl justify-center items-center shadow-md mb-4 ${isLoading ? 'opacity-70' : ''}`}
-              onPress={handleLogin}
+              onPress={() => handleLogin()}
               disabled={isLoading}
               activeOpacity={0.85}
               style={{
@@ -242,6 +255,26 @@ export default function LoginScreen() {
                 <ActivityIndicator color="#FFFFFF" size="small" />
               ) : (
                 <Text className="text-white font-semibold text-lg tracking-wide">Login</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className={`bg-herb-secondary h-14 rounded-xl justify-center items-center shadow-md mb-4 ${isLoading ? 'opacity-70' : ''}`}
+              onPress={() => handleLogin(true)} 
+              disabled={isLoading}
+              activeOpacity={0.85}
+              style={{
+                shadowColor: '#5F6F64',
+                shadowOpacity: 0.13,
+                shadowRadius: 8,
+                shadowOffset: { width: 0, height: 2 },
+                elevation: 2,
+              }}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="#FFFFFF" size="small" />
+              ) : (
+                <Text className="text-white font-semibold text-lg tracking-wide">Login as Vendor</Text>
               )}
             </TouchableOpacity>
 

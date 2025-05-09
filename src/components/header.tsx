@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 interface HeaderProps {
   title: string;
   showBack?: boolean;
+  backAction?: () => void;
   rightAction?: () => void;
   rightIcon?: keyof typeof MaterialIcons.glyphMap;
   transparent?: boolean;
@@ -20,6 +21,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({
   title,
   showBack = false,
+  backAction,
   rightAction,
   rightIcon,
   transparent = false,
@@ -52,7 +54,7 @@ const Header: React.FC<HeaderProps> = ({
       <View className="flex-row items-center justify-between">
         {showBack ? (
           <Pressable 
-            onPress={() => router.back()}
+            onPress={() => backAction ? backAction() : router.back()}
             className="w-10 h-10 items-center justify-center rounded-full active:bg-herb-surface"
             hitSlop={12}
           >
