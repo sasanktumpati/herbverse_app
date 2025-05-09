@@ -109,12 +109,6 @@ const TabItem: React.FC<TabItemProps> = ({
   const labelAnimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: withTiming(isFocused ? 1 : 0.6, { duration: 200 }),
-      transform: [{ 
-        translateY: withSpring(isFocused ? 0 : 2, { 
-          damping: 20, 
-          stiffness: 300 
-        }) 
-      }],
       color: interpolateColor(
         withTiming(isFocused ? 1 : 0, { duration: 200 }),
         [0, 1],

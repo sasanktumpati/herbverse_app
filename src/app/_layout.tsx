@@ -1,24 +1,23 @@
+import "../global.css";
+import { Slot, Redirect, useSegments } from "expo-router";
+import { View, Text } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useEffect } from 'react';
+import SplashScreen from '../../src/screens/splashscreen';
+import useAuthStore from '../../src/stores/authStore';
 import {
+  useFonts,
   Poppins_300Light,
   Poppins_400Regular,
   Poppins_500Medium,
   Poppins_600SemiBold,
   Poppins_700Bold,
-  useFonts,
 } from '@expo-google-fonts/poppins';
-import { Redirect, Slot, useSegments } from "expo-router";
 import * as SplashScreenModule from 'expo-splash-screen';
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from 'react';
-import { Text, View } from "react-native";
-import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomAlertDialog from '../../src/components/ui/CustomAlertDialog';
-import SplashScreen from '../../src/screens/splashscreen';
-import "../global.css";
-import { useAuthStore } from '@/stores';
 
 SplashScreenModule.preventAutoHideAsync();
-
 function InnerRootLayout() {
   const segments = useSegments();
   const { top } = useSafeAreaInsets();
@@ -37,14 +36,14 @@ function InnerRootLayout() {
     Poppins_600SemiBold,
     Poppins_700Bold,
   });
-
+  
   useEffect(() => {
     initializeAuthListener();
     return () => cleanup();
-  });
+  }, [initializeAuthListener, cleanup]);
 
   React.useEffect(() => {
-    if (fontsLoaded) {
+    if (fontsLoaded) {     
       SplashScreenModule.hideAsync();
     }
   }, [fontsLoaded]);
@@ -76,7 +75,7 @@ function InnerRootLayout() {
       </View>
     );
   }
-
+ 
   if (!user) {
     return <Redirect href="/auth/login" />;
   }
@@ -88,6 +87,7 @@ function InnerRootLayout() {
     >
       <StatusBar style="dark" backgroundColor="transparent" translucent />
       <Slot />
+      <CustomAlertDialog />
     </View>
   );
 }
@@ -103,6 +103,7 @@ export default function RootLayout() {
 
   React.useEffect(() => {
     if (fontsLoaded) {
+      
       SplashScreenModule.hideAsync();
     }
   }, [fontsLoaded]);
@@ -114,7 +115,6 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <InnerRootLayout />
-      <CustomAlertDialog />
     </SafeAreaProvider>
   );
 }

@@ -3,10 +3,9 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 
 interface CartItemDisplayProps {
   item: CartItem;
@@ -15,6 +14,12 @@ interface CartItemDisplayProps {
 }
 
 const CartItemDisplay: React.FC<CartItemDisplayProps> = React.memo(({ item, onUpdateQuantity, onRemoveItem }) => {
+  const [localQuantity, setLocalQuantity] = useState(item.quantity);
+
+  useEffect(() => {
+    setLocalQuantity(item.quantity);
+  }, [item.quantity]);
+
   return (
     <View className="flex-row items-center bg-white p-3.5 mb-3.5 rounded-xl shadow-md border border-herb-divider/70">
       <View className="bg-herb-surface rounded-lg overflow-hidden mr-3.5">
@@ -31,15 +36,23 @@ const CartItemDisplay: React.FC<CartItemDisplayProps> = React.memo(({ item, onUp
         <Text className="text-lg font-poppins-bold text-herb-primary mt-1">${item.price.toFixed(2)}</Text>
         <View className="flex-row items-center mt-3">
           <Pressable
-            onPress={() => onUpdateQuantity(item.id, item.quantity - 1)}
-            disabled={item.quantity <= 0}
+            onPress={() => {
+              const next = localQuantity - 1;
+              setLocalQuantity(next);
+              onUpdateQuantity(item.id, next);
+            }}
+            disabled={localQuantity <= 0}
             className="p-2 bg-herb-surface rounded-full active:bg-herb-divider"
           >
             <MaterialIcons name="remove" size={20} color="#2B4D3F" />
           </Pressable>
-          <Text className="text-lg font-poppins-medium text-herb-textPrimary w-10 text-center">{item.quantity}</Text>
+          <Text className="text-lg font-poppins-medium text-herb-textPrimary w-10 text-center">{localQuantity}</Text>
           <Pressable
-            onPress={() => onUpdateQuantity(item.id, item.quantity + 1)}
+            onPress={() => {
+              const next = localQuantity + 1;
+              setLocalQuantity(next);
+              onUpdateQuantity(item.id, next);
+            }}
             className="p-2 bg-herb-surface rounded-full active:bg-herb-divider"
           >
             <MaterialIcons name="add" size={20} color="#2B4D3F" />
@@ -56,12 +69,11 @@ const CartItemDisplay: React.FC<CartItemDisplayProps> = React.memo(({ item, onUp
     </View>
   );
 }, (prevProps, nextProps) => {
-  
   return prevProps.item.id === nextProps.item.id &&
-         prevProps.item.quantity === nextProps.item.quantity &&
          prevProps.item.price === nextProps.item.price && 
          prevProps.item.name === nextProps.item.name &&
-         prevProps.item.imageUrl === nextProps.item.imageUrl;
+         prevProps.item.imageUrl === nextProps.item.imageUrl &&
+         true;
 });
 
 CartItemDisplay.displayName = 'CartItemDisplay';
@@ -214,9 +226,9 @@ export default function CartScreen() {
           </View>
           <Pressable
             onPress={handleCheckout}
-            disabled={isCheckingOut || isCartLoading || !cart || cart.items.length === 0} 
+            disabled={isCheckingOut || !cart || cart.items.length === 0} 
             className={`w-full py-4 rounded-xl items-center justify-center shadow-lg 
-                        ${(isCheckingOut || isCartLoading || !cart || cart.items.length === 0) 
+                        ${(isCheckingOut || !cart || cart.items.length === 0) 
                           ? 'bg-herb-divider' 
                           : 'bg-herb-primary active:bg-herb-primaryDark'}`}
           >

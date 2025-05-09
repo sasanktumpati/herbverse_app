@@ -21,7 +21,7 @@ export default function OrdersScreen() {
     if (orders.length === 0 && !isLoading) {
         fetchUserOrders(); 
     }
-  });
+  }, []);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);

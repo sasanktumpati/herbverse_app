@@ -3,12 +3,13 @@ import HerbCard from '@/components/home/HerbCard';
 import { Item, useItemsStore } from '@/stores';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
   FlatList,
   Pressable,
+  ScrollView,
   Text,
   TextInput,
   View,
@@ -27,7 +28,15 @@ export default function ExploreScreen() {
   const { items, fetchItems, isLoading, error: itemsError } = useItemsStore();
   const params = useLocalSearchParams<{ query?: string; autoFocus?: string }>() || {};
 
-  const [searchQuery, setSearchQuery] = React.useState(params.query || '');
+  const [searchQuery, setSearchQuery] = useState(params.query || '');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  
+  const categories = useMemo(() => {
+    const cats = items
+      .map(i => i.category)
+      .filter((c): c is string => !!c);
+    return Array.from(new Set(cats));
+  }, [items]);
 
   useEffect(() => {
     fetchItems();
@@ -38,15 +47,19 @@ export default function ExploreScreen() {
   }, [params.query]);
 
   const filteredItems = useMemo(() => {
-    if (!searchQuery) {
-      return items;
+    let result = items;
+    if (searchQuery) {
+      result = result.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.category?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
-    return items.filter(
-      (item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.category?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [items, searchQuery]);
+    if (selectedCategory) {
+      result = result.filter(item => item.category === selectedCategory);
+    }
+    return result;
+  }, [items, searchQuery, selectedCategory]);
 
   const renderItem = ({ item }: { item: Item }) => (
     <View style={{ width: cardWidth }}>
@@ -63,31 +76,79 @@ export default function ExploreScreen() {
     <>
       <FocusAwareStatusBar />
       <View
-        style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
-        className="flex-1 bg-herb-surface"
+        style={{ flex: 1, backgroundColor: '#F7F9F7', paddingBottom: insets.bottom }}
       >
-        <View className="px-5 pt-5 pb-3">
-          <Text className="text-3xl font-poppins-bold text-herb-primaryDark mb-4">
-            Explore Herbs
-          </Text>
-
-          <View className="bg-white flex-row items-center px-4 h-14 rounded-xl shadow-md border border-herb-divider/70">
-            <MaterialIcons name="search" size={24} color="#5F6F64" />
-            <TextInput
-              className="flex-1 ml-3 text-herb-textPrimary text-base font-poppins-regular"
-              placeholder="Search for herbs, categories..."
-              placeholderTextColor="#A0AEC0"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              autoFocus={params.autoFocus === 'true'}
-              returnKeyType="search"
-            />
-            {searchQuery ? (
-              <Pressable onPress={() => setSearchQuery('')} hitSlop={10}>
-                <MaterialIcons name="close" size={22} color="#5F6F64" />
-              </Pressable>
-            ) : null}
+        {/* Header Section */}
+        <View style={{ paddingTop: insets.top }} className="bg-white shadow-sm">
+          <View className="px-5 pt-5 pb-3">
+            <Text className="text-3xl font-poppins-bold text-herb-primaryDark mb-4">
+              Explore Herbs
+            </Text>
+            <View className="bg-white flex-row items-center px-4 h-14 rounded-xl shadow-md border border-herb-divider/70">
+              <MaterialIcons name="search" size={24} color="#5F6F64" />
+              <TextInput
+                className="flex-1 ml-3 text-herb-textPrimary text-base font-poppins-regular"
+                placeholder="Search for herbs, categories..."
+                placeholderTextColor="#A0AEC0"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                autoFocus={params.autoFocus === 'true'}
+                returnKeyType="search"
+              />
+              {searchQuery ? (
+                <Pressable onPress={() => setSearchQuery('')} hitSlop={10}>
+                  <MaterialIcons name="close" size={22} color="#5F6F64" />
+                </Pressable>
+              ) : null}
+            </View>
           </View>
+
+          {/* Category Filter Row */}
+          {categories.length > 0 && (
+            <View className="border-b border-herb-divider/70">
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12, alignItems: 'center' }}
+              >
+                <Pressable
+                  onPress={() => setSelectedCategory(null)}
+                  className={`mr-2.5 px-4 py-2 rounded-full border ${
+                    !selectedCategory
+                      ? 'bg-herb-primary border-herb-primary'
+                      : 'bg-herb-surface border-herb-divider'
+                  }`}
+                >
+                  <Text
+                    className={`text-sm font-poppins-medium ${
+                      !selectedCategory ? 'text-white' : 'text-herb-primaryDark'
+                    }`}
+                  >
+                    All
+                  </Text>
+                </Pressable>
+                {categories.map(cat => (
+                  <Pressable
+                    key={cat}
+                    onPress={() => setSelectedCategory(cat === selectedCategory ? null : cat)}
+                    className={`mr-2.5 px-4 py-2 rounded-full border ${
+                      cat === selectedCategory
+                        ? 'bg-herb-primary border-herb-primary'
+                        : 'bg-herb-surface border-herb-divider'
+                    }`}
+                  >
+                    <Text
+                      className={`text-sm font-poppins-medium capitalize ${
+                        cat === selectedCategory ? 'text-white' : 'text-herb-primaryDark'
+                      }`}
+                    >
+                      {cat}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+          )}
         </View>
 
         {isLoading && items.length === 0 ? (
@@ -139,7 +200,7 @@ export default function ExploreScreen() {
             numColumns={numColumns}
             contentContainerStyle={{
               paddingHorizontal: listPaddingHorizontal - (cardMarginHorizontal / 2),
-              paddingTop: 8,
+              paddingTop: 16, 
               paddingBottom: 20,
             }}
             showsVerticalScrollIndicator={false}

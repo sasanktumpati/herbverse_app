@@ -29,7 +29,7 @@ const CustomAlertDialog: React.FC = () => {
     };
   });
 
-  if (!isVisible && opacity.value === 0) { // Only render if visible or animating out
+  if (!isVisible && opacity.value === 0) { 
     return null;
   }
 
@@ -43,8 +43,8 @@ const CustomAlertDialog: React.FC = () => {
         return { icon: 'warning' as keyof typeof MaterialIcons.glyphMap, color: '#FF9800', bgColor: 'bg-amber-100' };
       case 'info':
         return { icon: 'info' as keyof typeof MaterialIcons.glyphMap, color: '#2196F3', bgColor: 'bg-blue-100' };
-      case 'confirmation': // Added confirmation case
-        return { icon: 'help-outline' as keyof typeof MaterialIcons.glyphMap, color: '#607D8B', bgColor: 'bg-slate-100' }; // Example style
+      case 'confirmation': 
+        return { icon: 'help-outline' as keyof typeof MaterialIcons.glyphMap, color: '#607D8B', bgColor: 'bg-slate-100' }; 
       default:
         return { icon: 'notifications' as keyof typeof MaterialIcons.glyphMap, color: '#757575', bgColor: 'bg-gray-100' };
     }
@@ -56,9 +56,9 @@ const CustomAlertDialog: React.FC = () => {
     if (button.onPress) {
       button.onPress();
     }
-    // Do not hide alert automatically if button is destructive or has its own logic to close
+    
     if (button.style !== 'destructive' && !button.isLoading) {
-        // Hide only if not loading, to allow loading state to show
+        
          if (!buttons.some(b => b.isLoading)) hideAlert();
     }
   };
@@ -78,9 +78,9 @@ const CustomAlertDialog: React.FC = () => {
     <Modal
       transparent
       visible={isVisible}
-      animationType="none" // Handled by reanimated
+      animationType="none" 
       onRequestClose={() => {
-        // Allow closing via back button only if there's a cancel button or only one default button
+        
         const cancelButton = buttons.find(b => b.style === 'cancel');
         if (cancelButton) {
           handleButtonPress(cancelButton);
@@ -97,7 +97,7 @@ const CustomAlertDialog: React.FC = () => {
           <View className={`items-center pt-6 pb-4 px-6 ${bgColor}`}>
             <View 
               className={`w-16 h-16 rounded-full items-center justify-center mb-3`}
-              style={{ backgroundColor: color + '20' }} // Lighter version of the icon color
+              style={{ backgroundColor: color + '20' }} 
             >
               <MaterialIcons name={icon} size={32} color={color} />
             </View>
@@ -107,22 +107,33 @@ const CustomAlertDialog: React.FC = () => {
           <View className="p-5 pt-3">
             <Text className="text-base text-slate-600 font-poppins text-center mb-6 leading-relaxed">{message}</Text>
             
-            <View className={`flex-col ${buttons.length > 2 ? '' : 'md:flex-row'} space-y-2 md:space-y-0 md:space-x-2`}>
+            <View className="flex-col md:flex-row md:space-x-4">
               {buttons.map((button, index) => (
                 <Pressable
                   key={index}
                   onPress={() => handleButtonPress(button)}
                   disabled={button.isLoading}
-                  className={`flex-1 py-3.5 px-4 rounded-xl items-center justify-center
-                    ${button.style === 'destructive' ? 'bg-red-500/10' : 
-                      button.style === 'cancel' ? 'bg-slate-200/70' : 'bg-herb-primary/10'}
+                  className={`
+                    py-3.5 px-4 rounded-xl items-center justify-center
+                    ${index > 0 ? 'mt-4 md:mt-0' : ''}
+                    ${button.style === 'destructive' ? 'bg-red-500/10' 
+                      : button.style === 'cancel' 
+                        ? 'bg-slate-200/70' 
+                        : 'bg-herb-primary/10'}
                     ${button.isLoading ? 'opacity-70' : 'active:opacity-80'}
                   `}
                 >
                   {button.isLoading ? (
-                    <ActivityIndicator size="small" color={button.style === 'destructive' ? '#F44336' : button.style === 'cancel' ? '#4B5563' : '#2B4D3F'} />
+                    <ActivityIndicator size="small" color={
+                      button.style === 'destructive' 
+                        ? '#F44336' 
+                        : button.style === 'cancel' 
+                          ? '#4B5563' 
+                          : '#2B4D3F'} />
                   ) : (
-                    <Text className={`${getButtonTextStyle(button.style)} text-base`}>{button.text}</Text>
+                    <Text className={`${getButtonTextStyle(button.style)} text-base`}>
+                      {button.text}
+                    </Text>
                   )}
                 </Pressable>
               ))}
@@ -136,7 +147,7 @@ const CustomAlertDialog: React.FC = () => {
 
 const styles = StyleSheet.create({
   alertBox: {
-    maxWidth: 400, // Max width for larger screens if applicable
+    maxWidth: 400, 
   },
 });
 

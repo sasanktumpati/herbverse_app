@@ -26,11 +26,11 @@ export default function SignupScreen() {
     return () => {
       clearAuthError('signUp');
     };
-  });
+  }, [clearAuthError]);
 
   React.useEffect(() => {
     if (user) router.replace('/');
-  });
+  }, [user, router]);
 
   const handleSignup = async () => {
     if (!name.trim() || !email.trim() || !password) {
