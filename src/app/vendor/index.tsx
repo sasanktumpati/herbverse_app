@@ -78,9 +78,8 @@ export default function VendorDashboardScreen() {
           </Text>
           <Text className="text-herb-muted font-poppins text-sm mt-1">From delivered orders</Text>
         </View>
-
-        <Text className="text-xl font-poppins-semibold text-herb-primaryDark mb-4 px-1">Quick Actions</Text>
-        <View className="space-y-4">
+        <Text className="text-xl font-poppins-semibold text-herb-primaryDark mb-6 px-1">Quick Actions</Text>
+        <View className="space-y-10">
           <Pressable 
             onPress={() => router.push('/vendor/items/add')}
             className="bg-herb-primary flex-row items-center justify-between py-4 px-5 rounded-2xl shadow-lg active:bg-herb-primaryDark"
