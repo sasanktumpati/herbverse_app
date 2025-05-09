@@ -39,7 +39,7 @@ export default function VendorDashboardScreen() {
   return (
     <>
     <FocusAwareStatusBar />
-    <View style={{ flex: 1, paddingTop: top }} className="bg-herb-surface-alt">
+    <View style={{ flex: 1 }} className="bg-herb-surface-alt">
       <View className="px-5 pt-6 pb-4 bg-white shadow-sm">
         <Text className="text-3xl font-poppins-bold text-herb-primaryDark">Vendor Dashboard</Text>
         <Text className="text-herb-muted font-poppins mt-1">Welcome back, {profile?.displayName || 'Vendor'}!</Text>

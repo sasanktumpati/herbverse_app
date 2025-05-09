@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, FlatList, Pressable, ActivityIndicator, Switch, Alert, RefreshControl } from 'react-native';
+import { View, Text, FlatList, Pressable, ActivityIndicator, Switch, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { useRouter, Link } from 'expo-router';
 import { FocusAwareStatusBar } from '@/components/common/status-bar';
-import useUIStore from '@/stores/uiStore';
 import useVendorItemsStore, { VendorItem } from '@/stores/vendor/vendorItemsStore';
 import { Image } from 'expo-image';
 
@@ -74,7 +73,6 @@ ItemCard.displayName = "VendorItemCard";
 export default function VendorItemsScreen() {
   const { top } = useSafeAreaInsets();
   const router = useRouter();
-  const showAlert = useUIStore(state => state.showAlert);
   const { 
     vendorItems, 
     isLoading, 
@@ -114,7 +112,7 @@ export default function VendorItemsScreen() {
 
   if (error) {
     return (
-      <View style={{ paddingTop: top }} className="flex-1 items-center justify-center bg-herb-surface-alt px-5">
+      <View className="flex-1 items-center justify-center bg-herb-surface-alt px-5">
         <MaterialIcons name="error-outline" size={48} color="#F28C0F" />
         <Text className="text-xl font-poppins-semibold text-herb-error mt-3 text-center">Failed to Load Items</Text>
         <Text className="text-herb-muted font-poppins text-center mt-1 mb-4">{error.message}</Text>
@@ -128,7 +126,7 @@ export default function VendorItemsScreen() {
   return (
     <>
     <FocusAwareStatusBar />
-    <View style={{ flex: 1, paddingTop: top }} className="bg-herb-surface-alt">
+    <View style={{ flex: 1 }} className="bg-herb-surface-alt">
       <View className="px-5 pt-6 pb-4 bg-white shadow-sm">
         <Text className="text-3xl font-poppins-bold text-herb-primaryDark">My Items</Text>
         <View className="flex-row justify-between items-center mt-2">

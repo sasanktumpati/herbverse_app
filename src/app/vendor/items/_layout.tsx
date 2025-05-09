@@ -3,6 +3,6 @@ import { Stack } from 'expo-router';
 
 export default function VendorItemsLayout() {
   return (
-    <Stack />
+    <Stack screenOptions={{ headerShown: false }} />
   );
 }
