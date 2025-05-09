@@ -6,11 +6,11 @@ module.exports = {
     extend: {
       colors: {
         herb: {
-          background: '#F5F6E7',
+          background: '#F0F8EA',
           surface: '#F0F8EA',
           accentSurface: '#C6CEC9',
           primary: '#2B4D3F',
-          primaryDark: '#446835',
+          primaryDark: '#08402b',
           secondary: '#DAE5D8',
           textPrimary: '#22332B',
           textSecondary: '#4A5351',
@@ -19,9 +19,16 @@ module.exports = {
           card: '#FFFFFF',
           success: '#008000',
           muted: '#5F6F64',
-
         }
-      }
+      },
+      fontFamily: {
+        poppins: ['Poppins_400Regular', 'sans-serif'],
+        'poppins-light': ['Poppins_300Light', 'sans-serif'],
+        'poppins-regular': ['Poppins_400Regular', 'sans-serif'],
+        'poppins-medium': ['Poppins_500Medium', 'sans-serif'],
+        'poppins-semibold': ['Poppins_600SemiBold', 'sans-serif'],
+        'poppins-bold': ['Poppins_700Bold', 'sans-serif'],
+      },
     },
   },
   future: {

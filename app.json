@@ -8,6 +8,35 @@
     },
     "plugins": [
       [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/poppins/100Thin/Poppins_100Thin.ttf",
+            "node_modules/@expo-google-fonts/poppins/200ExtraLight/Poppins_200ExtraLight.ttf",
+            "node_modules/@expo-google-fonts/poppins/300Light/Poppins_300Light.ttf",
+            "node_modules/@expo-google-fonts/poppins/400Regular/Poppins_400Regular.ttf",
+            "node_modules/@expo-google-fonts/poppins/500Medium/Poppins_500Medium.ttf",
+            "node_modules/@expo-google-fonts/poppins/600SemiBold/Poppins_600SemiBold.ttf",
+            "node_modules/@expo-google-fonts/poppins/700Bold/Poppins_700Bold.ttf",
+            "node_modules/@expo-google-fonts/poppins/800ExtraBold/Poppins_800ExtraBold.ttf",
+            "node_modules/@expo-google-fonts/poppins/900Black/Poppins_900Black.ttf",
+            "node_modules/@expo-google-fonts/poppins/Poppins_100Thin.ttf",
+            "node_modules/@expo-google-fonts/poppins/Poppins_200ExtraLight.ttf",
+            "node_modules/@expo-google-fonts/poppins/Poppins_300Light.ttf"
+          ]
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#FFFFFF",
@@ -19,9 +48,7 @@
           "imageWidth": 200
         }
       ],
-      [
-        "expo-router"
-      ]
+      "expo-router"
     ],
     "name": "herbverse_app",
     "slug": "herbverse_app",
@@ -36,11 +63,13 @@
       },
       "permissions": [
         "INTERNET"
-      ]
+      ],
+      "googleServicesFile": "./creds/google-services.json"
     },
     "ios": {
       "icon": "./assets/images/icon.png",
-      "bundleIdentifier": "com.sasanktumpati.herbverse-app"
+      "bundleIdentifier": "com.sasanktumpati.herbverse-app",
+      "googleServicesFile": "./creds/GoogleService-Info.plist"
     }
   }
 }

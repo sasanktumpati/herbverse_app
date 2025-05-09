@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "369718755716",
+    "project_id": "herbverse-ca1c7",
+    "storage_bucket": "herbverse-ca1c7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369718755716:android:33eb2594ffacfac5da1dd1",
+        "android_client_info": {
+          "package_name": "com.sasanktumpati.herbverse_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBELA3BY2D7Ex_GaQbRCRFDTzgexu1S7uA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
