@@ -6,7 +6,7 @@ import { useRouter, Link } from 'expo-router';
 import { FocusAwareStatusBar } from '@/components/common/status-bar';
 import useUIStore from '@/stores/uiStore';
 import useVendorItemsStore, { VendorItem } from '@/stores/vendor/vendorItemsStore';
-
+import { Image } from 'expo-image';
 
 const ItemCard: React.FC<{ item: VendorItem; onToggleActive: (id: string, isActive: boolean) => void; onEdit: (id: string) => void; }> = React.memo(({ item, onToggleActive, onEdit }) => {
   const [isActive, setIsActive] = useState(item.isActive);
@@ -21,24 +21,31 @@ const ItemCard: React.FC<{ item: VendorItem; onToggleActive: (id: string, isActi
   };
   
   return (
-    <View className="bg-white p-4 mb-4 rounded-xl shadow-lg border border-herb-divider/70">
-      <View className="flex-row items-start">
+    <Pressable 
+      onPress={() => onEdit(item.id)}
+      className="bg-white p-4 mb-4 rounded-2xl shadow-lg border border-herb-divider/50 active:bg-herb-surface/50"
+    >
+      <View className="flex-row items-center">
         {item.imageUrl ? (
-          <View className="w-20 h-20 rounded-lg bg-herb-surface mr-4 overflow-hidden">
-            <Image source={{ uri: item.imageUrl }} className="w-full h-full" resizeMode="cover" />
-          </View>
+          <Image 
+            source={item.imageUrl} 
+            className="w-20 h-20 rounded-xl bg-herb-surface" 
+            contentFit="cover"
+            transition={200}
+          />
         ) : (
-          <View className="w-20 h-20 rounded-lg bg-herb-surface mr-4 items-center justify-center">
+          <View className="w-20 h-20 rounded-xl bg-herb-surface items-center justify-center">
             <Ionicons name="leaf-outline" size={32} color="#3E6643" />
           </View>
         )}
-        <View className="flex-1">
+        <View className="flex-1 ml-4">
           <Text className="text-lg font-poppins-semibold text-herb-primaryDark" numberOfLines={2}>{item.name}</Text>
           <Text className="text-sm font-poppins text-herb-muted mt-0.5" numberOfLines={2}>{item.description}</Text>
-          <Text className="text-lg font-poppins-bold text-herb-accent mt-1">${item.price.toFixed(2)}</Text>
+          <Text className="text-lg font-poppins-bold text-herb-accent mt-1.5">${item.price.toFixed(2)}</Text>
         </View>
       </View>
-      <View className="flex-row justify-between items-center mt-3 pt-3 border-t border-herb-divider/60">
+
+      <View className="flex-row justify-between items-center mt-4 pt-4 border-t border-herb-divider/60">
         <View className="flex-row items-center">
           <Switch
             trackColor={{ false: "#D1D5DB", true: "#6EE7B7" }}
@@ -53,19 +60,16 @@ const ItemCard: React.FC<{ item: VendorItem; onToggleActive: (id: string, isActi
         </View>
         <Pressable 
           onPress={() => onEdit(item.id)}
-          className="flex-row items-center bg-herb-primary/10 py-2 px-3.5 rounded-lg active:bg-herb-primary/20"
+          className="flex-row items-center bg-herb-primary/10 py-2 px-4 rounded-xl active:bg-herb-primary/20"
         >
           <MaterialIcons name="edit" size={18} color="#2B4D3F" />
-          <Text className="text-sm font-poppins-medium text-herb-primaryDark ml-1.5">Edit</Text>
+          <Text className="text-herb-primaryDark font-poppins-medium text-base ml-2">Edit Item</Text>
         </Pressable>
       </View>
-    </View>
+    </Pressable>
   );
 });
 ItemCard.displayName = "VendorItemCard";
-
-
-const Image = (props: any) => <View><Text>Image Placeholder</Text></View>; 
 
 export default function VendorItemsScreen() {
   const { top } = useSafeAreaInsets();
@@ -125,24 +129,30 @@ export default function VendorItemsScreen() {
     <>
     <FocusAwareStatusBar />
     <View style={{ flex: 1, paddingTop: top }} className="bg-herb-surface-alt">
-      <View className="px-5 pt-5 pb-4 flex-row justify-between items-center bg-white shadow-sm">
+      <View className="px-5 pt-6 pb-4 bg-white shadow-sm">
         <Text className="text-3xl font-poppins-bold text-herb-primaryDark">My Items</Text>
-        <Link href="/vendor/items/add" asChild>
-          <Pressable className="bg-herb-primary p-2.5 rounded-full shadow-md active:bg-herb-primaryDark">
-            <MaterialIcons name="add" size={24} color="white" />
-          </Pressable>
-        </Link>
+        <View className="flex-row justify-between items-center mt-2">
+          <Text className="text-herb-muted font-poppins">Manage your store inventory</Text>
+          <Link href="/vendor/items/add" asChild>
+            <Pressable className="bg-herb-primary p-3 rounded-xl shadow-md active:bg-herb-primaryDark flex-row items-center">
+              <MaterialIcons name="add" size={20} color="white" />
+              <Text className="text-white font-poppins-semibold ml-1">Add Item</Text>
+            </Pressable>
+          </Link>
+        </View>
       </View>
 
       {vendorItems.length === 0 && !isLoading ? (
         <View className="flex-1 items-center justify-center px-6">
-          <Ionicons name="file-tray-stacked-outline" size={56} color="#8D978F" />
-          <Text className="text-xl font-poppins-semibold text-herb-primaryDark text-center mt-4">No Items Yet</Text>
-          <Text className="text-herb-muted font-poppins text-center mt-1 mb-6">
-            Add your first herb or product to start selling.
+          <View className="bg-herb-surface/50 w-20 h-20 rounded-full items-center justify-center mb-4">
+            <Ionicons name="file-tray-stacked-outline" size={40} color="#8D978F" />
+          </View>
+          <Text className="text-xl font-poppins-semibold text-herb-primaryDark text-center">No Items Yet</Text>
+          <Text className="text-herb-muted font-poppins text-center mt-2 mb-6 max-w-[280px]">
+            Add your first herb or product to start selling on the marketplace.
           </Text>
           <Link href="/vendor/items/add" asChild>
-            <Pressable className="bg-herb-primary py-3 px-8 rounded-xl shadow active:bg-herb-primaryDark">
+            <Pressable className="bg-herb-primary py-3.5 px-8 rounded-xl shadow-lg active:bg-herb-primaryDark">
               <Text className="text-white font-poppins-semibold text-lg">Add New Item</Text>
             </Pressable>
           </Link>
@@ -150,12 +160,27 @@ export default function VendorItemsScreen() {
       ) : (
         <FlatList
           data={vendorItems}
-          renderItem={({ item }) => <ItemCard item={item} onToggleActive={handleToggleActive} onEdit={handleEditItem} />}
+          renderItem={({ item }) => (
+            <ItemCard 
+              item={item} 
+              onToggleActive={handleToggleActive} 
+              onEdit={handleEditItem} 
+            />
+          )}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 20 }}
+          contentContainerStyle={{ 
+            paddingHorizontal: 16, 
+            paddingTop: 16, 
+            paddingBottom: 20 
+          }}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#2B4D3F"]} tintColor={"#2B4D3F"}/>
+            <RefreshControl 
+              refreshing={refreshing} 
+              onRefresh={onRefresh} 
+              colors={["#2B4D3F"]} 
+              tintColor="#2B4D3F"
+            />
           }
           ListFooterComponent={isLoading && vendorItems.length > 0 ? (
             <View className="py-4 items-center">

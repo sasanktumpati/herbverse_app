@@ -1,18 +1,37 @@
-import { Stack, Redirect, Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
 import useAuthStore from '../../stores/authStore';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
+
+function TabBarIcon({ focused, icon, name }) {
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: withSpring(focused ? 1.1 : 1) }],
+  }));
+
+  return (
+    <View className="items-center">
+      <Animated.View style={animatedStyle}>
+        <MaterialIcons 
+          name={icon} 
+          size={24} 
+          color={focused ? '#2B4D3F' : '#8D978F'} 
+        />
+      </Animated.View>
+    </View>
+  );
+}
 
 export default function VendorLayout() {
   const { user, isVendor, initializing } = useAuthStore();
-  const { top, bottom } = useSafeAreaInsets();
+  const { bottom } = useSafeAreaInsets();
 
   if (initializing) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Loading...</Text>
+      <View className="flex-1 items-center justify-center bg-herb-surface-alt">
+        <Text className="text-herb-muted font-poppins">Loading...</Text>
       </View>
     );
   }
@@ -25,27 +44,32 @@ export default function VendorLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#2B4D3F', 
-        tabBarInactiveTintColor: '#8D978F', 
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
-          borderTopColor: '#E5E7EB', 
+          borderTopColor: '#E5E7EB',
           paddingBottom: bottom,
           paddingTop: 8,
           height: 58 + bottom,
+          elevation: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
         },
+        tabBarActiveTintColor: '#2B4D3F',
+        tabBarInactiveTintColor: '#8D978F',
         tabBarLabelStyle: {
           fontFamily: 'Poppins_500Medium',
           fontSize: 11,
-        },
+        }
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Dashboard',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="dashboard" color={color} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon="dashboard" name="Dashboard" />
           ),
         }}
       />
@@ -53,17 +77,17 @@ export default function VendorLayout() {
         name="items"
         options={{
           title: 'My Items',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list" color={color} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon="inventory-2" name="Items" />
           ),
         }}
       />
       <Tabs.Screen
         name="orders"
         options={{
-          title: 'Incoming Orders',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="receipt-long" color={color} size={size} />
+          title: 'Orders',
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon="receipt-long" name="Orders" />
           ),
         }}
       />
@@ -71,8 +95,8 @@ export default function VendorLayout() {
         name="settings"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="settings" color={color} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} icon="settings" name="Settings" />
           ),
         }}
       />

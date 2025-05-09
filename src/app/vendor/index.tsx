@@ -11,15 +11,15 @@ import { FocusAwareStatusBar } from '@/components/common/status-bar';
 const StatCard = ({ title, value, icon, color, onPress }) => (
   <Pressable 
     onPress={onPress}
-    className="bg-white p-4 rounded-xl shadow-lg border border-herb-divider/70 flex-1 active:bg-herb-surface/50"
+    className="bg-white p-5 rounded-2xl shadow-lg border border-herb-divider/50 flex-1 active:bg-herb-surface/50"
   >
     <View className="flex-row justify-between items-start">
-      <Text className="text-herb-muted font-poppins-medium text-sm uppercase tracking-wider">{title}</Text>
-      <View className={`w-8 h-8 rounded-full items-center justify-center`} style={{ backgroundColor: color+'2A' }}>
-        <MaterialIcons name={icon} size={16} color={color} />
+      <Text className="text-herb-muted font-poppins text-xs uppercase tracking-wider">{title}</Text>
+      <View className={`w-10 h-10 rounded-full items-center justify-center`} style={{ backgroundColor: color+'15' }}>
+        <MaterialIcons name={icon} size={20} color={color} />
       </View>
     </View>
-    <Text className="text-3xl font-poppins-bold text-herb-primaryDark mt-1.5">{value}</Text>
+    <Text className="text-4xl font-poppins-bold text-herb-primaryDark mt-2">{value}</Text>
   </Pressable>
 );
 
@@ -30,7 +30,6 @@ export default function VendorDashboardScreen() {
   const { vendorOrders, isLoading: ordersLoading } = useVendorOrdersStore();
   const { vendorItems, isLoading: itemsLoading } = useVendorItemsStore();
 
-  
   const pendingOrders = vendorOrders.filter(o => o.status === 'pending').length;
   const activeItems = vendorItems.filter(i => i.isActive).length;
   const totalSales = vendorOrders
@@ -41,25 +40,25 @@ export default function VendorDashboardScreen() {
     <>
     <FocusAwareStatusBar />
     <View style={{ flex: 1, paddingTop: top }} className="bg-herb-surface-alt">
-      <View className="px-5 pt-5 pb-4 bg-white shadow-sm">
+      <View className="px-5 pt-6 pb-4 bg-white shadow-sm">
         <Text className="text-3xl font-poppins-bold text-herb-primaryDark">Vendor Dashboard</Text>
-        <Text className="text-herb-muted font-poppins">Welcome, {profile?.displayName || 'Vendor'}!</Text>
+        <Text className="text-herb-muted font-poppins mt-1">Welcome back, {profile?.displayName || 'Vendor'}!</Text>
       </View>
 
       <ScrollView 
-        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 20, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 20 }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="flex-row justify-between mb-5 space-x-4">
+        <View className="flex-row justify-between space-x-4 mb-6">
           <StatCard 
             title="Pending Orders" 
             value={ordersLoading ? '...' : pendingOrders} 
             icon="hourglass-top" 
-            color="#FFA726" 
+            color="#FF9800" 
             onPress={() => router.push('/vendor/orders?filter=pending')}
           />
           <StatCard 
-            title="Active Listings" 
+            title="Active Items" 
             value={itemsLoading ? '...' : activeItems} 
             icon="storefront" 
             color="#4CAF50" 
@@ -67,50 +66,65 @@ export default function VendorDashboardScreen() {
           />
         </View>
         
-        <View className="bg-white p-4 rounded-xl shadow-lg border border-herb-divider/70 mb-5">
-          <View className="flex-row justify-between items-center mb-1">
-            <Text className="text-lg font-poppins-semibold text-herb-primaryDark">Total Revenue</Text>
-            <Ionicons name="cash-outline" size={24} color="#2B4D3F" />
+        <View className="bg-white p-5 rounded-2xl shadow-lg border border-herb-divider/50 mb-6">
+          <View className="flex-row justify-between items-center mb-2">
+            <Text className="text-xl font-poppins-semibold text-herb-primaryDark">Total Revenue</Text>
+            <View className="bg-green-100 w-10 h-10 rounded-full items-center justify-center">
+              <Ionicons name="cash-outline" size={24} color="#15803D" />
+            </View>
           </View>
           <Text className="text-4xl font-poppins-bold text-herb-accent">
             ${totalSales.toFixed(2)}
           </Text>
-          <Text className="text-herb-muted font-poppins text-sm">From delivered orders</Text>
+          <Text className="text-herb-muted font-poppins text-sm mt-1">From delivered orders</Text>
         </View>
 
-        <Text className="text-xl font-poppins-semibold text-herb-primaryDark mb-3 mt-2 px-1">Quick Actions</Text>
-        <View className="space-y-3">
+        <Text className="text-xl font-poppins-semibold text-herb-primaryDark mb-4 px-1">Quick Actions</Text>
+        <View className="space-y-4">
           <Pressable 
             onPress={() => router.push('/vendor/items/add')}
-            className="bg-herb-primary flex-row items-center justify-center py-3.5 px-4 rounded-xl shadow-md active:bg-herb-primaryDark"
+            className="bg-herb-primary flex-row items-center justify-between py-4 px-5 rounded-2xl shadow-lg active:bg-herb-primaryDark"
           >
-            <MaterialIcons name="add-circle-outline" size={22} color="white" />
-            <Text className="text-white font-poppins-semibold text-base ml-2">Add New Item</Text>
+            <View className="flex-row items-center">
+              <MaterialIcons name="add-circle-outline" size={24} color="white" />
+              <Text className="text-white font-poppins-semibold text-lg ml-3">Add New Item</Text>
+            </View>
+            <MaterialIcons name="arrow-forward-ios" size={18} color="white" />
           </Pressable>
+
           <Pressable 
             onPress={() => router.push('/vendor/orders')}
-            className="bg-white border border-herb-primary flex-row items-center justify-center py-3.5 px-4 rounded-xl shadow-md active:bg-herb-surface"
+            className="bg-white border-2 border-herb-primary flex-row items-center justify-between py-4 px-5 rounded-2xl shadow-md active:bg-herb-surface"
           >
-            <MaterialIcons name="list-alt" size={22} color="#2B4D3F" />
-            <Text className="text-herb-primary font-poppins-semibold text-base ml-2">Manage Orders</Text>
+            <View className="flex-row items-center">
+              <MaterialIcons name="list-alt" size={24} color="#2B4D3F" />
+              <Text className="text-herb-primary font-poppins-semibold text-lg ml-3">Manage Orders</Text>
+            </View>
+            <MaterialIcons name="arrow-forward-ios" size={18} color="#2B4D3F" />
           </Pressable>
-           <Pressable 
+
+          <Pressable 
             onPress={() => router.push('/vendor/settings')}
-            className="bg-white border border-herb-muted flex-row items-center justify-center py-3.5 px-4 rounded-xl shadow-md active:bg-herb-surface"
+            className="bg-white border border-herb-divider flex-row items-center justify-between py-4 px-5 rounded-2xl shadow-md active:bg-herb-surface"
           >
-            <MaterialIcons name="settings" size={22} color="#5F6F64" />
-            <Text className="text-herb-muted font-poppins-semibold text-base ml-2">Vendor Settings</Text>
+            <View className="flex-row items-center">
+              <MaterialIcons name="settings" size={24} color="#5F6F64" />
+              <Text className="text-herb-muted font-poppins-semibold text-lg ml-3">Vendor Settings</Text>
+            </View>
+            <MaterialIcons name="arrow-forward-ios" size={18} color="#5F6F64" />
           </Pressable>
         </View>
         
-        <View className="mt-6 bg-white p-4 rounded-xl shadow-lg border border-herb-divider/70">
-          <Text className="text-lg font-poppins-semibold text-herb-primaryDark mb-2">Recent Activity</Text>
-          <View className="items-center py-6">
-            <Ionicons name="notifications-off-outline" size={40} color="#CBD5E0" />
-            <Text className="text-herb-muted font-poppins mt-2">No new activity to show.</Text>
+        <View className="mt-6 bg-white p-5 rounded-2xl shadow-lg border border-herb-divider/50">
+          <Text className="text-xl font-poppins-semibold text-herb-primaryDark mb-4">Recent Activity</Text>
+          <View className="items-center py-8">
+            <View className="bg-gray-100 w-16 h-16 rounded-full items-center justify-center mb-3">
+              <Ionicons name="notifications-off-outline" size={32} color="#8D978F" />
+            </View>
+            <Text className="text-herb-primaryDark font-poppins-medium text-lg">No new activity</Text>
+            <Text className="text-herb-muted font-poppins text-center mt-1">Your recent activities will appear here</Text>
           </View>
         </View>
-
       </ScrollView>
     </View>
     </>

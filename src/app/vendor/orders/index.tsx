@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { View, Text, FlatList, Pressable, ActivityIndicator, Alert, RefreshControl, ScrollView } from 'react-native';
+import { View, Text, FlatList, Pressable, ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import { useRouter, useLocalSearchParams, Link } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FocusAwareStatusBar } from '@/components/common/status-bar';
 import useUIStore from '@/stores/uiStore';
 import { OrderStatus, useVendorOrdersStore, VendorOrder } from '@/stores';
 import StatusBadge from '@/components/ui/StatusBadge';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const ORDER_STATUS_OPTIONS: OrderStatus[] = ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'failed'];
 
-const OrderCard: React.FC<{ order: VendorOrder; onUpdateStatus: (orderId: string, newStatus: OrderStatus) => void; }> = React.memo(({ order, onUpdateStatus }) => {
+const OrderCard: React.FC<{ order: VendorOrder; onUpdateStatus: (orderId: string, newStatus: OrderStatus) => void; delay?: number }> = React.memo(({ order, onUpdateStatus, delay = 0 }) => {
   const router = useRouter();
   const showAlert = useUIStore(state => state.showAlert);
 
@@ -30,49 +31,86 @@ const OrderCard: React.FC<{ order: VendorOrder; onUpdateStatus: (orderId: string
   };
 
   return (
-    <Pressable 
-      onPress={() => router.push(`/vendor/orders/${order.id}`)} 
-      className="bg-white p-4 mb-4 rounded-xl shadow-lg border border-herb-divider/70 active:bg-herb-surface/50"
-    >
-      <View className="flex-row justify-between items-start mb-2">
-        <View className="flex-1">
-          <Text className="text-lg font-poppins-bold text-herb-primaryDark">Order #{order.orderNumber || order.id.substring(0,8)}</Text>
-          <Text className="text-xs text-herb-muted font-poppins">
-            {new Date(order.createdAt?.toDate?.() ?? Date.now()).toLocaleDateString()} - {new Date(order.createdAt?.toDate?.() ?? Date.now()).toLocaleTimeString()}
-          </Text>
-        </View>
-        <StatusBadge status={order.status} size="medium" />
-      </View>
-      
-      <View className="mb-3">
-        {order.items.slice(0,2).map(item => ( 
-          <View key={item.id} className="flex-row items-center my-0.5">
-            <Text className="text-sm text-herb-textPrimary font-poppins">{item.quantity} x {item.name}</Text>
+    <Animated.View entering={FadeInDown.delay(delay)}>
+      <Pressable 
+        onPress={() => router.push(`/vendor/orders/${order.id}`)} 
+        className="bg-white p-4 mb-4 rounded-2xl shadow-lg border border-herb-divider/50 active:bg-herb-surface/50"
+      >
+        <View className="flex-row justify-between items-start mb-3">
+          <View className="flex-1 mr-3">
+            <Text className="tex  t-xl font-poppins-bold text-herb-primaryDark">Order #{order.orderNumber || order.id.substring(0,8)}</Text>
+            <Text className="text-xs text-herb-muted font-poppins mt-0.5">
+              {new Date(order.createdAt?.toDate?.() ?? Date.now()).toLocaleDateString()} - {new Date(order.createdAt?.toDate?.() ?? Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </Text>
           </View>
-        ))}
-        {order.items.length > 2 && (
-          <Text className="text-xs text-herb-muted font-poppins mt-0.5">+{order.items.length - 2} more items</Text>
-        )}
-      </View>
+          <StatusBadge status={order.status} size="medium" />
+        </View>
+        
+        <View className="mb-3">
+          {order.items.slice(0,2).map(item => ( 
+            <View key={item.id} className="flex-row items-center justify-between py-1.5 px-3 bg-herb-surface/30 rounded-lg mb-1.5">
+              <View className="flex-row items-center flex-1 mr-3">
+                <Text className="font-poppins-medium text-herb-primaryDark">{item.quantity}×</Text>
+                <Text className="text-herb-textPrimary font-poppins ml-2 flex-1" numberOfLines={1}>{item.name}</Text>
+              </View>
+              <Text className="text-herb-accent font-poppins-medium">${(item.price * item.quantity).toFixed(2)}</Text>
+            </View>
+          ))}
+          {order.items.length > 2 && (
+            <Text className="text-xs text-herb-muted font-poppins mt-1 ml-1">+{order.items.length - 2} more items</Text>
+          )}
+        </View>
 
-      <View className="flex-row justify-between items-center pt-3 border-t border-herb-divider/60">
-        <Text className="text-base font-poppins-semibold text-herb-accent">${order.totalPrice.toFixed(2)}</Text>
-        <Pressable 
-          onPress={handleShowStatusOptions}
-          className="bg-herb-primary/10 py-2 px-3.5 rounded-lg active:bg-herb-primary/20"
-        >
-          <Text className="text-sm font-poppins-medium text-herb-primaryDark">Update Status</Text>
-        </Pressable>
-      </View>
-    </Pressable>
+        <View className="flex-row justify-between items-center pt-3 border-t border-herb-divider/60">
+          <Text className="text-lg font-poppins-semibold text-herb-accent">${order.totalPrice.toFixed(2)}</Text>
+          <View className="flex-row">
+            <Pressable 
+              onPress={handleShowStatusOptions}
+              className="bg-herb-primary/10 py-2 px-4 rounded-xl active:bg-herb-primary/20 mr-2"
+            >
+              <Text className="text-herb-primaryDark font-poppins-medium">Update Status</Text>
+            </Pressable>
+            <Pressable 
+              onPress={() => router.push(`/vendor/orders/${order.id}`)}
+              className="bg-herb-primary py-2 px-4 rounded-xl active:bg-herb-primaryDark flex-row items-center"
+            >
+              <Text className="text-white font-poppins-medium mr-1">Details</Text>
+              <MaterialIcons name="arrow-forward-ios" size={14} color="white" />
+            </Pressable>
+          </View>
+        </View>
+      </Pressable>
+    </Animated.View>
   );
 });
 OrderCard.displayName = "VendorOrderCard";
 
+interface FilterButtonProps {
+  status: OrderStatus | 'all';
+  activeFilter: OrderStatus | 'all';
+  onPress: (status: OrderStatus | 'all') => void;
+}
+
+const FilterButton: React.FC<FilterButtonProps> = React.memo(({ status, activeFilter, onPress }) => (
+  <Pressable
+    onPress={() => onPress(status)}
+    className={`mr-2.5 px-4 py-2.5 rounded-xl border shadow-sm ${
+      activeFilter === status 
+        ? 'bg-herb-primary border-herb-primary' 
+        : 'bg-white border-herb-divider'
+    }`}
+  >
+    <Text className={`text-sm font-poppins-medium capitalize ${
+      activeFilter === status ? 'text-white' : 'text-herb-primaryDark'
+    }`}>
+      {status === 'all' ? 'All Orders' : status}
+    </Text>
+  </Pressable>
+));
+FilterButton.displayName = "FilterButton";
 
 export default function VendorOrdersScreen() {
   const { top } = useSafeAreaInsets();
-  const router = useRouter();
   const params = useLocalSearchParams<{ filter?: OrderStatus }>();
   const { 
     vendorOrders, 
@@ -135,9 +173,11 @@ export default function VendorOrdersScreen() {
     <>
     <FocusAwareStatusBar />
     <View style={{ flex: 1, paddingTop: top }} className="bg-herb-surface-alt">
-      <View className="px-5 pt-5 pb-1 bg-white shadow-sm">
-        <Text className="text-3xl font-poppins-bold text-herb-primaryDark">Incoming Orders</Text>
+      <View className="px-5 pt-6 pb-4 bg-white shadow-sm">
+        <Text className="text-3xl font-poppins-bold text-herb-primaryDark">Orders</Text>
+        <Text className="text-herb-muted font-poppins mt-1">Manage your incoming orders</Text>
       </View>
+
       <View className="bg-white shadow-sm border-b border-herb-divider/70">
         <ScrollView 
           horizontal 
@@ -145,32 +185,25 @@ export default function VendorOrdersScreen() {
           contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
         >
           {allStatuses.map(status => (
-            <Pressable
+            <FilterButton
               key={status}
-              onPress={() => setActiveFilter(status)}
-              className={`mr-2.5 px-4 py-2 rounded-full border ${
-                activeFilter === status 
-                  ? 'bg-herb-primary border-herb-primary' 
-                  : 'bg-herb-surface border-herb-divider'
-              }`}
-            >
-              <Text className={`text-sm font-poppins-medium capitalize ${
-                activeFilter === status ? 'text-white' : 'text-herb-primaryDark'
-              }`}>
-                {status === 'all' ? 'All Orders' : status}
-              </Text>
-            </Pressable>
+              status={status}
+              activeFilter={activeFilter}
+              onPress={setActiveFilter}
+            />
           ))}
         </ScrollView>
       </View>
 
       {filteredOrders.length === 0 && !isLoading ? (
         <View className="flex-1 items-center justify-center px-6">
-          <Ionicons name="file-tray-outline" size={56} color="#8D978F" />
-          <Text className="text-xl font-poppins-semibold text-herb-primaryDark text-center mt-4">
+          <View className="bg-herb-surface/50 w-20 h-20 rounded-full items-center justify-center mb-4">
+            <Ionicons name="file-tray-outline" size={40} color="#8D978F" />
+          </View>
+          <Text className="text-xl font-poppins-semibold text-herb-primaryDark text-center">
             {activeFilter === 'all' ? 'No Orders Yet' : `No ${activeFilter} orders`}
           </Text>
-          <Text className="text-herb-muted font-poppins text-center mt-1 mb-6">
+          <Text className="text-herb-muted font-poppins text-center mt-2">
             {activeFilter === 'all' 
               ? "New customer orders will appear here." 
               : `You currently have no orders with the status: ${activeFilter}.`}
@@ -178,7 +211,7 @@ export default function VendorOrdersScreen() {
           {activeFilter !== 'all' && (
             <Pressable 
               onPress={() => setActiveFilter("all")} 
-              className="mt-4 bg-herb-primary py-3 px-8 rounded-xl shadow active:bg-herb-primaryDark"
+              className="mt-6 bg-herb-primary py-3.5 px-8 rounded-xl shadow-lg active:bg-herb-primaryDark"
             >
               <Text className="text-white font-poppins-semibold text-lg">View All Orders</Text>
             </Pressable>
@@ -187,15 +220,30 @@ export default function VendorOrdersScreen() {
       ) : (
         <FlatList
           data={filteredOrders}
-          renderItem={({ item }) => <OrderCard order={item} onUpdateStatus={handleUpdateStatus} />}
+          renderItem={({ item, index }) => (
+            <OrderCard 
+              order={item} 
+              onUpdateStatus={handleUpdateStatus} 
+              delay={index * 100}
+            />
+          )}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 20 }}
+          contentContainerStyle={{ 
+            paddingHorizontal: 16, 
+            paddingTop: 16, 
+            paddingBottom: 20 
+          }}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#2B4D3F"]} tintColor={"#2B4D3F"}/>
+            <RefreshControl 
+              refreshing={refreshing} 
+              onRefresh={onRefresh} 
+              colors={["#2B4D3F"]} 
+              tintColor="#2B4D3F"
+            />
           }
           ListFooterComponent={isLoading && vendorOrders.length > 0 ? (
-             <View className="py-4 items-center">
+            <View className="py-4 items-center">
               <ActivityIndicator color="#2B4D3F" />
             </View>
           ) : null}
