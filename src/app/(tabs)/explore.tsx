@@ -3,7 +3,7 @@ import HerbCard from '@/components/home/HerbCard';
 import { Item, useItemsStore } from '@/stores';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -24,13 +24,15 @@ const listPaddingHorizontal = 16;
 const cardWidth = (width - (listPaddingHorizontal * 2) - (cardMarginHorizontal * (numColumns - 1))) / numColumns;
 
 export default function ExploreScreen() {
-  const insets = useSafeAreaInsets();
-  const { items, fetchItems, isLoading, error: itemsError } = useItemsStore();
+  const { top } = useSafeAreaInsets();
+  const { items, fetchItems, isLoading: itemsLoading, error: itemsError } = useItemsStore();
   const params = useLocalSearchParams<{ query?: string; autoFocus?: string }>() || {};
 
   const [searchQuery, setSearchQuery] = useState(params.query || '');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   
+  const searchInputRef = useRef<TextInput>(null);
+
   const categories = useMemo(() => {
     const cats = items
       .map(i => i.category)
@@ -45,6 +47,14 @@ export default function ExploreScreen() {
   useEffect(() => {
     setSearchQuery(params.query || '');
   }, [params.query]);
+
+  useEffect(() => {
+    if (params.autoFocus === 'true' && searchInputRef.current) {
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 100);
+    }
+  }, [params.autoFocus]);
 
   const filteredItems = useMemo(() => {
     let result = items;
@@ -76,10 +86,9 @@ export default function ExploreScreen() {
     <>
       <FocusAwareStatusBar />
       <View
-        style={{ flex: 1, backgroundColor: '#F7F9F7', paddingBottom: insets.bottom }}
+        style={{ flex: 1, backgroundColor: '#F7F9F7', paddingBottom: top }}
       >
-        {/* Header Section */}
-        <View style={{ paddingTop: insets.top }} className="bg-white shadow-sm">
+        <View style={{ paddingTop: top }} className="bg-white shadow-sm">
           <View className="px-5 pt-5 pb-3">
             <Text className="text-3xl font-poppins-bold text-herb-primaryDark mb-4">
               Explore Herbs
@@ -87,12 +96,12 @@ export default function ExploreScreen() {
             <View className="bg-white flex-row items-center px-4 h-14 rounded-xl shadow-md border border-herb-divider/70">
               <MaterialIcons name="search" size={24} color="#5F6F64" />
               <TextInput
-                className="flex-1 ml-3 text-herb-textPrimary text-base font-poppins-regular"
+                ref={searchInputRef}
+                className="flex-1 ml-3 text-herb-textPrimary text-base font-poppins-regular h-full"
                 placeholder="Search for herbs, categories..."
                 placeholderTextColor="#A0AEC0"
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                autoFocus={params.autoFocus === 'true'}
                 returnKeyType="search"
               />
               {searchQuery ? (
@@ -103,7 +112,6 @@ export default function ExploreScreen() {
             </View>
           </View>
 
-          {/* Category Filter Row */}
           {categories.length > 0 && (
             <View className="border-b border-herb-divider/70">
               <ScrollView
@@ -151,7 +159,7 @@ export default function ExploreScreen() {
           )}
         </View>
 
-        {isLoading && items.length === 0 ? (
+        {itemsLoading && items.length === 0 ? (
           <View className="flex-1 items-center justify-center">
             <ActivityIndicator size="large" color="#2B4D3F" />
             <Text className="mt-3 font-poppins text-herb-muted">Loading herbs...</Text>

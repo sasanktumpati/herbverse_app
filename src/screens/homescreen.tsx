@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useMemo, useRef, useState, useEffect } from 'react';
 import {
@@ -145,24 +145,17 @@ export default function HomeScreen() {
               </Text>
             </View>
             
-            <View className="bg-white/90 flex-row items-center px-4 h-14 rounded-xl shadow-md mb-6 border border-white/30 backdrop-blur-sm">
+            <Pressable 
+              onPress={() => router.push({ pathname: '/explore', params: { autoFocus: 'true' }})}
+              className="bg-white/90 flex-row items-center px-4 h-14 rounded-xl shadow-md mb-6 border border-white/30 backdrop-blur-sm"
+            >
               <MaterialIcons name="search" size={24} color="#5F6F64" />
-              <TextInput
-                className="flex-1 ml-3 text-herb-textPrimary text-base font-poppins-regular"
-                placeholder="Search for herbs, spices..."
-                placeholderTextColor="#A0AEC0"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                onFocus={handleSearchFocus}
-                onSubmitEditing={handleSearchSubmit}
-                returnKeyType="search"
-              />
-              {searchQuery ? (
-                <Pressable onPress={() => setSearchQuery('')} hitSlop={10}>
-                  <MaterialIcons name="close" size={22} color="#5F6F64" />
-                </Pressable>
-              ) : null}
-            </View>
+              <Text
+                className="flex-1 ml-3 text-herb-muted text-base font-poppins-regular"
+              >
+                Search for herbs, spices...
+              </Text>
+            </Pressable>
           </View>
           
           <HeroSection />
