@@ -187,7 +187,6 @@ export default function CartScreen() {
       <StatusBar style="dark" backgroundColor="#FFFFFF" translucent={false} />
       <View style={{ flex: 1 }} className="bg-herb-background">
         <View 
-          style={{ paddingTop: top }} 
           className="px-5 pt-5 pb-4 flex-row justify-between items-center bg-white shadow-sm"
         >
           <Text className="text-3xl font-poppins-bold text-herb-primaryDark">Your Cart</Text>

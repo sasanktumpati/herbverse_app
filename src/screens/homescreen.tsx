@@ -80,7 +80,6 @@ export default function HomeScreen() {
         style={[
           styles.header, 
           { 
-            paddingTop: top, 
             opacity: headerOpacity,
             transform: [{ translateY: headerTranslateY }]
           }
@@ -114,7 +113,7 @@ export default function HomeScreen() {
       </Animated.View>
       
       <Animated.ScrollView
-        contentContainerStyle={{ paddingBottom: 90 }}
+        contentContainerStyle={{ paddingTop: 10, paddingBottom: 90 }}
         showsVerticalScrollIndicator={false}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -123,7 +122,7 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
         className="bg-herb-background"
       >
-        <View style={{ paddingTop: top }} className="px-5">
+        <View className="px-5">
           <View className="mb-6">
             <Text className="text-herb-primary font-poppins-medium text-base">Welcome back,</Text>
             <Text className="text-3xl font-poppins-bold text-herb-primaryDark">

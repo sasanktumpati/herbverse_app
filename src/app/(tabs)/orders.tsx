@@ -185,7 +185,7 @@ export default function OrdersScreen() {
     <>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
       <View style={{ paddingBottom: bottom + 75 }} className="flex-1 bg-herb-background">
-        <View style={{ paddingTop: top }} className="bg-white shadow-sm">
+        <View className="bg-white shadow-sm">
           <View className="px-5 pt-5 pb-4">
             <Text className="text-3xl font-poppins-bold text-herb-primaryDark">My Orders</Text>
           </View>

@@ -83,7 +83,7 @@ function InnerRootLayout() {
   return (
     <View
       className="flex-1 bg-herb-background font-poppins-regular"
-      style={{ paddingTop: top }}
+      style={{ paddingTop: top + 10 }}
     >
       <StatusBar style="dark" backgroundColor="transparent" translucent />
       <Slot />

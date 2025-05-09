@@ -40,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <View 
-      style={{ paddingTop: top + 10 }} 
+      style={{ paddingTop: 10 }} 
       className={`${containerBaseClasses} ${modeClasses}`}
     >
       {transparent && (
