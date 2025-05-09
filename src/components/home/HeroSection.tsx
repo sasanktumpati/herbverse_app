@@ -18,7 +18,7 @@ const HeroSection: React.FC = () => {
       id: '1',
       title: 'Seasonal Collection',
       description: 'Discover our handpicked organic herbs',
-      image: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=500',
+      image: 'https://images.unsplash.com/photo-1533792344354-ed5e8fc12494?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       color: ['rgba(159, 191, 135, 0.85)', 'rgba(90, 135, 77, 0.9)'] as const,
       buttonText: 'Shop Now',
       route: '/explore'
@@ -27,7 +27,7 @@ const HeroSection: React.FC = () => {
       id: '2',
       title: 'Wellness Essentials',
       description: 'Natural remedies for everyday health',
-      image: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=500',
+      image: 'https://images.unsplash.com/photo-1553744562-96972ff3cd46?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       color: ['rgba(255, 173, 173, 0.85)', 'rgba(237, 102, 102, 0.9)'] as const,
       buttonText: 'Learn More',
       route: '/explore'
@@ -36,7 +36,7 @@ const HeroSection: React.FC = () => {
       id: '3',
       title: 'Tea Collection',
       description: 'Premium herbal blends for relaxation',
-      image: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=500',
+      image: 'https://images.unsplash.com/photo-1491497895121-1334fc14d8c9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       color: ['rgba(160, 196, 255, 0.85)', 'rgba(94, 163, 247, 0.9)'] as const,
       buttonText: 'Explore',
       route: '/explore'
