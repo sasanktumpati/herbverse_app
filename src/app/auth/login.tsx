@@ -1,4 +1,4 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -14,7 +14,6 @@ import {
   View
 } from 'react-native';
 import Animated, {
-  Easing,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
@@ -39,25 +38,21 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-  const logoScale = useSharedValue(1);
-  const formOpacity = useSharedValue(0);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  
   const errorShake = useSharedValue(0);
-  const headerTranslateY = useSharedValue(0);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
-        headerTranslateY.value = withTiming(-60, { duration: 300 });
-        logoScale.value = withTiming(0.8, { duration: 300 });
+        setIsKeyboardVisible(true);
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
-        headerTranslateY.value = withTiming(0, { duration: 300 });
-        logoScale.value = withTiming(1, { duration: 300 });
+        setIsKeyboardVisible(false);
       }
     );
 
@@ -65,18 +60,14 @@ export default function LoginScreen() {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
-  }, [headerTranslateY, logoScale]);
+  }, []);
   
   useEffect(() => {
     clearAuthError('signIn');
-    
-    logoScale.value = withTiming(1, { duration: 800, easing: Easing.elastic(1) });
-    formOpacity.value = withTiming(1, { duration: 1000, easing: Easing.out(Easing.cubic) });
-    
     return () => {
       clearAuthError('signIn');
     };
-  }, [clearAuthError, formOpacity, logoScale]);
+  }, [clearAuthError]);
 
   useEffect(() => {
     if (user) router.replace('/');
@@ -109,55 +100,68 @@ export default function LoginScreen() {
     await signInWithEmail(email, password);
   };
 
+  const handleSocialLogin = (provider: string) => {
+    showAlert({ 
+      title: 'Coming Soon!', 
+      message: `${provider} login will be available soon.`, 
+      type: 'info', 
+      buttons: [{ text: 'OK' }] 
+    });
+  };
+
   const isLoading = loadingStates.signIn;
   const error = errors.signIn;
 
-  const logoAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: logoScale.value }
-    ]
-  }));
-
   const formAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: formOpacity.value,
-    transform: [
-      { translateX: errorShake.value }
-    ]
-  }));
-  
-  const headerAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateY: headerTranslateY.value }
-    ]
+    transform: [{ translateX: errorShake.value }]
   }));
 
   return (
     <>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
       <LinearGradient
-        colors={['#FFFFFF', '#F5F8F5']}
+        colors={['#f8fafc', '#e6f4ea']}
         style={{ flex: 1, paddingTop: top, paddingBottom: bottom }}
       >
         <KeyboardAvoidingView 
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          className="flex-1 justify-center px-6"
+          behavior="padding"
+          keyboardVerticalOffset={top + 24}
+          className="flex-1 justify-center px-4"
         >
-          <Animated.View style={headerAnimatedStyle} className="items-center mb-8">
-            <Animated.View style={logoAnimatedStyle}>
-              <Image
-                source={require('../../../assets/images/icon-black.png')}
-                className="w-24 h-24 mb-4"
-                resizeMode="contain"
-              />
-            </Animated.View>
-            <Text className="text-3xl font-bold text-herb-textPrimary mb-2">Welcome Back</Text>
-            <Text className="text-base text-herb-muted">Login to your HerbVerse account</Text>
-          </Animated.View>
-
-          <Animated.View style={formAnimatedStyle} className="w-full">
-            <View className="mb-5">
-              <Text className="text-sm font-medium text-herb-textPrimary mb-2 ml-1">Email</Text>
-              <View className="flex-row items-center bg-white border border-herb-divider rounded-xl px-4 h-14">
+          <View className="items-center mb-8">
+            <Image
+              source={require('../../../assets/images/icon-black.png')}
+              className="w-24 h-24 mb-4"
+              resizeMode="contain"
+              style={{ shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } }}
+            />
+            <Text className="text-4xl font-extrabold text-herb-primaryDark mb-1 tracking-tight">
+              Welcome Back
+            </Text>
+            <Text className="text-base text-herb-muted mb-2">
+              Login to your HerbVerse account
+            </Text>
+          </View>
+          <Animated.View 
+            style={[
+              formAnimatedStyle, 
+              { 
+                backgroundColor: '#fff', 
+                borderRadius: 20, 
+                padding: 24, 
+                shadowColor: '#000', 
+                shadowOpacity: 0.07, 
+                shadowRadius: 12, 
+                shadowOffset: { width: 0, height: 4 },
+                elevation: 3,
+                marginBottom: 24,
+              }
+            ]}
+            className="w-full"
+          >
+            <View className="mb-6">
+              <Text className="text-sm font-semibold text-herb-textPrimary mb-2 ml-1">Email</Text>
+              <View className="flex-row items-center border border-herb-divider rounded-xl px-4 h-14 bg-herb-bgInput focus-within:border-herb-primary transition-all duration-150">
                 <MaterialIcons name="email" size={20} color="#5F6F64" className="mr-2" />
                 <TextInput
                   className="flex-1 text-base text-herb-textPrimary py-3"
@@ -168,13 +172,17 @@ export default function LoginScreen() {
                   keyboardType="email-address"
                   autoCapitalize="none"
                   editable={!isLoading}
+                  autoComplete="email"
+                  textContentType="emailAddress"
+                  style={{ backgroundColor: 'transparent' }}
+                  selectionColor="#5F6F64"
                 />
               </View>
             </View>
 
-            <View className="mb-5">
-              <Text className="text-sm font-medium text-herb-textPrimary mb-2 ml-1">Password</Text>
-              <View className="flex-row items-center bg-white border border-herb-divider rounded-xl px-4 h-14">
+            <View className="mb-4">
+              <Text className="text-sm font-semibold text-herb-textPrimary mb-2 ml-1">Password</Text>
+              <View className="flex-row items-center border border-herb-divider rounded-xl px-4 h-14 bg-herb-bgInput focus-within:border-herb-primary transition-all duration-150">
                 <MaterialIcons name="lock" size={20} color="#5F6F64" className="mr-2" /> 
                 <TextInput
                   className="flex-1 text-base text-herb-textPrimary py-3"
@@ -184,10 +192,15 @@ export default function LoginScreen() {
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                   editable={!isLoading}
+                  autoComplete="password"
+                  textContentType="password"
+                  style={{ backgroundColor: 'transparent' }}
+                  selectionColor="#5F6F64"
                 />
                 <TouchableOpacity 
                   className="p-2"
                   onPress={() => setShowPassword(!showPassword)}
+                  activeOpacity={0.7}
                 >
                   <MaterialIcons 
                     name={showPassword ? "visibility" : "visibility-off"} 
@@ -196,40 +209,67 @@ export default function LoginScreen() {
                   />
                 </TouchableOpacity>
               </View>
-              
               <TouchableOpacity 
                 className="self-end mt-2"
                 onPress={() => showAlert({ title: "Forgot Password", message: "Forgot password feature coming soon!", type: 'info', buttons: [{ text: 'OK' }] })}
+                activeOpacity={0.7}
               >
                 <Text className="text-herb-primary text-sm font-medium">Forgot password?</Text>
               </TouchableOpacity>
             </View>
 
             {error && (
-              <View className="flex-row items-center bg-red-100 rounded-lg p-3 mb-5">
-                <MaterialIcons name="error-outline" size={16} color="#DC2626" /> 
-                <Text className="text-red-700 ml-2 flex-1">{error.message}</Text>
+              <View className="flex-row items-center bg-red-50 border border-red-200 rounded-lg p-3 mb-5 mt-2">
+                <MaterialIcons name="error-outline" size={18} color="#DC2626" /> 
+                <Text className="text-red-700 ml-2 flex-1 text-sm">{error.message}</Text>
               </View>
             )}
 
             <TouchableOpacity
-              className={`bg-herb-primary h-14 rounded-xl justify-center items-center shadow-md mb-6 active:bg-herb-primaryDark ${isLoading ? 'opacity-70' : ''}`}
+              className={`bg-herb-primary h-14 rounded-xl justify-center items-center shadow-md mb-4 ${isLoading ? 'opacity-70' : ''}`}
               onPress={handleLogin}
               disabled={isLoading}
-              activeOpacity={0.8}
+              activeOpacity={0.85}
+              style={{
+                shadowColor: '#5F6F64',
+                shadowOpacity: 0.13,
+                shadowRadius: 8,
+                shadowOffset: { width: 0, height: 2 },
+                elevation: 2,
+              }}
             >
               {isLoading ? (
-                <ActivityIndicator color="#FFFFFF" />
+                <ActivityIndicator color="#FFFFFF" size="small" />
               ) : (
-                <Text className="text-white font-semibold text-lg">Login</Text>
+                <Text className="text-white font-semibold text-lg tracking-wide">Login</Text>
               )}
             </TouchableOpacity>
 
-            <View className="flex-row justify-center">
+            <View className="flex-row items-center my-4">
+              <View className="flex-1 h-px bg-gray-300" />
+              <Text className="px-2 text-herb-muted text-sm">or continue with</Text>
+              <View className="flex-1 h-px bg-gray-300" />
+            </View>
+            <View className="flex-row justify-center space-x-4 mb-4">
+              <TouchableOpacity
+                onPress={() => handleSocialLogin('Google')}
+                className="w-12 h-12 bg-white rounded-full justify-center items-center shadow-md"
+              >
+                <AntDesign name="google" size={24} color="#DB4437" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleSocialLogin('Apple')}
+                className="w-12 h-12 bg-white rounded-full justify-center items-center shadow-md"
+              >
+                <AntDesign name="apple1" size={24} color="#000" />
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row justify-center mt-2">
               <Text className="text-herb-muted text-base">Don&apos;t have an account? </Text>
               <Link href="/auth/signup" asChild>
-                <TouchableOpacity disabled={isLoading}>
-                  <Text className="text-herb-primary font-semibold text-base">Sign Up</Text>
+                <TouchableOpacity disabled={isLoading} activeOpacity={0.7}>
+                  <Text className="text-herb-primary font-semibold text-base underline">Sign Up</Text>
                 </TouchableOpacity>
               </Link>
             </View>
