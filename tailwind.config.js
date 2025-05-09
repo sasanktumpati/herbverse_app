@@ -6,7 +6,7 @@ module.exports = {
     extend: {
       colors: {
         herb: {
-          background: '#F0F8EA',
+          background: '#FFFFFF',
           surface: '#F0F8EA',
           accentSurface: '#C6CEC9',
           primary: '#2B4D3F',
