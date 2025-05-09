@@ -1,23 +1,26 @@
 import { FocusAwareStatusBar } from '@/components/common/status-bar';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import React from 'react';
 import {
-  Image, Pressable,
+  Image as RNImage, Pressable,
   ScrollView,
   Text,
   TouchableOpacity,
-  View
+  View,
+  ActivityIndicator,
+  Alert
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useAuthStore from '../../../src/stores/authStore';
 import useUIStore from '../../../src/stores/uiStore';
 import useOrdersStore from '../../../src/stores/ordersStore';
+import { version } from '../../../package.json';
 
 export default function ProfileScreen() {
-  const { bottom } = useSafeAreaInsets();
-  const { user, profile, signOut, loadingStates } = useAuthStore();
+  const { bottom, top } = useSafeAreaInsets();
+  const { user, profile, signOut, loadingStates, isVendor } = useAuthStore();
   const router = useRouter();
   const showAlert = useUIStore((state) => state.showAlert);
   const orders = useOrdersStore((state) => state.orders);
@@ -92,13 +95,19 @@ export default function ProfileScreen() {
       onPress: () => showAlert({ title: 'Coming Soon', message: 'Help & support will be added soon', type: 'info', buttons: [{text: 'OK'}] }),
       color: '#00897B' 
     },
+    ...(isVendor ? [{ 
+      icon: 'storefront', 
+      label: 'Vendor Dashboard', 
+      onPress: () => router.push('/vendor'),
+      color: '#3E6643' 
+    }] : []),
   ];
 
   if (!profile) {
     return (
-      <View className="flex-1 items-center justify-center bg-herb-background">
-        <MaterialIcons name="account-circle" size={64} color="#3E6643" />
-        <Text className="text-herb-muted text-lg font-poppins">Loading profile...</Text>
+      <View style={{ paddingTop: top, paddingBottom: bottom + 75 }} className="flex-1 items-center justify-center bg-herb-surface-alt">
+        <ActivityIndicator size="large" color="#2B4D3F" />
+        <Text className="text-herb-muted font-poppins mt-2">Loading profile...</Text>
       </View>
     );
   }
@@ -106,7 +115,7 @@ export default function ProfileScreen() {
   return (
     <>
       <FocusAwareStatusBar/>
-      <View style={{ flex: 1}} className="bg-herb-surface">
+      <View style={{ flex: 1}} className="bg-herb-background">
         <View className="px-5 pt-5 pb-4 bg-white shadow-sm">
           <Text className="text-3xl font-poppins-bold text-herb-primaryDark">My Profile</Text>
         </View>
@@ -149,6 +158,12 @@ export default function ProfileScreen() {
               <Text className="text-white/90 font-poppins mt-1">
                 {profile?.email || user?.email || 'No email available'}
               </Text>
+
+              {isVendor && (
+                <View className="mt-2 bg-herb-secondary/20 px-3 py-1 rounded-full">
+                  <Text className="text-sm font-poppins-medium text-herb-secondary-dark">Vendor Account</Text>
+                </View>
+              )}
               
             </View>
           </LinearGradient>
@@ -210,7 +225,7 @@ export default function ProfileScreen() {
           
           <View className="items-center mb-6 mt-2">
             <Text className="text-herb-muted font-poppins text-xs">
-              HerbVerse App v1.0.0
+              HerbVerse App v{version}
             </Text>
           </View>
         </ScrollView>
@@ -218,3 +233,9 @@ export default function ProfileScreen() {
     </>
   );
 }
+
+// Placeholder for Image, remove if you have a global Image component or use react-native's
+const Image = ({ source, className }: { source: { uri: string | undefined }, className: string }) => {
+  if (!source.uri) return null; // Or return a placeholder
+  return <RNImage source={source} className={className} />;
+};
