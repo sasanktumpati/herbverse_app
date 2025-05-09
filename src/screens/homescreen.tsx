@@ -3,7 +3,7 @@ import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import {
   Animated,
   Dimensions,
@@ -26,7 +26,7 @@ const { width: screenWidth } = Dimensions.get('window');
 export default function HomeScreen() {
   const { top } = useSafeAreaInsets();
   const router = useRouter();
-  const { items, isLoading: itemsLoading } = useItemsStore();
+  const { items, isLoading: itemsLoading, fetchItems } = useItemsStore();
   const { orders, isLoading: ordersLoading } = useOrdersStore();
   const { profile } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,6 +34,10 @@ export default function HomeScreen() {
   
   const scrollY = useRef(new Animated.Value(0)).current;
   
+  useEffect(() => {
+    fetchItems();
+  }, [fetchItems]);
+
   const handleSearchFocus = () => {
     router.push({ pathname: '/explore', params: { query: searchQuery, autoFocus: 'true' }});
   };
