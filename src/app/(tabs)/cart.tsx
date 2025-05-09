@@ -176,7 +176,7 @@ export default function CartScreen() {
   return (
     <>
       <StatusBar style="dark" backgroundColor="#FFFFFF" translucent={false} />
-      <View style={{ flex: 1 }} className="bg-herb-surface">
+      <View style={{ flex: 1 }} className="bg-herb-background">
         <View 
           style={{ paddingTop: top }} 
           className="px-5 pt-5 pb-4 flex-row justify-between items-center bg-white shadow-sm"
@@ -195,16 +195,24 @@ export default function CartScreen() {
             />
           )}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 230 }} 
-          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ 
+            paddingHorizontal: 16, 
+            paddingTop: 16, 
+            paddingBottom: bottom + 270, 
+          }}
+          showsVerticalScrollIndicator={true}
+          bounces={true}
+          alwaysBounceVertical={false}
+          overScrollMode="always"
+          scrollEnabled={true}
           ListEmptyComponent={
-            !isLoading ? ( 
+            !isLoading ? (
               <View className="items-center justify-center mt-20">
                 <Text className="text-herb-muted font-poppins text-lg">Your cart is currently empty.</Text>
               </View>
             ) : null
           }
-          extraData={cart?.items} 
+          extraData={cart?.items}
         />
 
         <View 
@@ -214,10 +222,6 @@ export default function CartScreen() {
           <View className="flex-row justify-between items-center mb-2">
             <Text className="text-base font-poppins text-herb-muted">Subtotal ({cart.totalQuantity} item{cart.totalQuantity === 1 ? '' : 's'})</Text>
             <Text className="text-lg font-poppins-medium text-herb-textPrimary">${cart.totalPrice.toFixed(2)}</Text>
-          </View>
-          <View className="flex-row justify-between items-center mb-3">
-            <Text className="text-base font-poppins text-herb-muted">Shipping</Text>
-            <Text className="text-lg font-poppins-medium text-herb-textPrimary">Free</Text> 
           </View>
           <View className="border-t border-herb-divider/70 my-3"></View>
           <View className="flex-row justify-between items-center mb-5">
