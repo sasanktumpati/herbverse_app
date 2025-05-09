@@ -14,40 +14,46 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   const getStatusStyle = (status: string) => {
     switch (status.toLowerCase()) {
       case 'pending': return { 
-        bg: 'bg-amber-100', 
+        bg: 'bg-amber-50', 
+        border: 'border-amber-200',
         text: 'text-amber-700', 
         icon: 'pending', 
         iconColor: '#D97706' 
       };
       case 'processing': return { 
-        bg: 'bg-blue-100', 
+        bg: 'bg-blue-50', 
+        border: 'border-blue-200',
         text: 'text-blue-700', 
         icon: 'hourglass-top', 
         iconColor: '#2563EB' 
       };
       case 'shipped': return { 
-        bg: 'bg-purple-100', 
-        text: 'text-purple-700', 
+        bg: 'bg-indigo-50', 
+        border: 'border-indigo-200',
+        text: 'text-indigo-700', 
         icon: 'local-shipping', 
-        iconColor: '#7C3AED' 
+        iconColor: '#4F46E5' 
       };
       case 'delivered': return { 
-        bg: 'bg-green-100', 
+        bg: 'bg-green-50', 
+        border: 'border-green-200',
         text: 'text-green-700', 
         icon: 'check-circle', 
         iconColor: '#16A34A' 
       };
       case 'cancelled': return { 
-        bg: 'bg-red-100', 
+        bg: 'bg-red-50', 
+        border: 'border-red-200',
         text: 'text-red-700', 
         icon: 'cancel', 
         iconColor: '#DC2626' 
       };
       default: return { 
-        bg: 'bg-herb-surface', 
-        text: 'text-herb-primaryDark', 
+        bg: 'bg-gray-50', 
+        border: 'border-gray-200',
+        text: 'text-gray-700', 
         icon: 'help-outline', 
-        iconColor: '#2B4D3F' 
+        iconColor: '#4B5563' 
       };
     }
   };
@@ -74,7 +80,19 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
   const currentSize = sizeClasses[size];
 
   return (
-    <View className={`flex-row items-center ${currentSize.padding} rounded-full ${statusStyle.bg} shadow-sm`}>
+    <View 
+      className={`
+        flex-row items-center ${currentSize.padding} rounded-full 
+        ${statusStyle.bg} ${statusStyle.border} border
+      `}
+      style={{
+        shadowColor: '#00000015',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+        elevation: 1
+      }}
+    >
       <MaterialIcons 
         name={statusStyle.icon as keyof typeof MaterialIcons.glyphMap} 
         size={currentSize.iconSize} 

@@ -1,16 +1,15 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter, Link } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
 import React, { useMemo, useRef, useState, useEffect } from 'react';
 import {
   Animated,
   Dimensions,
   Image,
-  Pressable, StyleSheet,
+  Pressable, 
+  StyleSheet,
   Text,
-  TextInput,
   View
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -30,7 +29,6 @@ export default function HomeScreen() {
   const { items, isLoading: itemsLoading, fetchItems } = useItemsStore();
   const { orders, isLoading: ordersLoading } = useOrdersStore();
   const { profile } = useAuthStore();
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -39,12 +37,8 @@ export default function HomeScreen() {
     fetchItems();
   }, [fetchItems]);
 
-  const handleSearchFocus = () => {
-    router.push({ pathname: '/explore', params: { query: searchQuery, autoFocus: 'true' }});
-  };
-
-  const handleSearchSubmit = () => {
-    router.push({ pathname: '/explore', params: { query: searchQuery }});
+  const handleSearchPress = () => {
+    router.push({ pathname: '/explore', params: { autoFocus: 'true' }});
   };
   
   const categories = useMemo(() => {
@@ -92,20 +86,13 @@ export default function HomeScreen() {
           }
         ]}
       >
-        <BlurView intensity={90} tint="light" style={StyleSheet.absoluteFill}>
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(240, 248, 234, 0.8)' }]} />
-        </BlurView>
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: '#FFFFFF' }]} />
         
         <View style={styles.headerContent}>
-          <View>
-            <Text className="text-herb-primary text-sm font-poppins-regular">Welcome back,</Text>
-            <Text className="text-herb-primaryDark font-poppins-semibold text-lg">
-              {profile?.displayName || 'Herb Enthusiast'}
-            </Text>
-          </View>
+          <Text className="text-herb-primary font-poppins-semibold text-2xl">HerbVerse</Text>
           <Pressable 
             onPress={() => router.push('/profile')}
-            className="h-10 w-10 rounded-full items-center justify-center overflow-hidden border border-herb-divider shadow-sm"
+            className="h-10 w-10 rounded-full items-center justify-center overflow-hidden border border-herb-divider/60 shadow-sm"
           >
             {profile?.photoURL ? (
               <Image 
@@ -136,32 +123,35 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
         className="bg-herb-background"
       >
-        <View className="pt-2"> 
-          <View style={{ paddingTop: top + 20 }} className="px-5">
-            <View className="mb-6 pt-2">
-              <Text className="text-herb-primary text-base font-poppins-regular">Welcome back,</Text>
-              <Text className="text-3xl font-poppins-bold text-herb-primaryDark">
-                {profile?.displayName || 'Herb Enthusiast'} 👋
-              </Text>
-            </View>
-            
-            <Pressable 
-              onPress={() => router.push({ pathname: '/explore', params: { autoFocus: 'true' }})}
-              className="bg-white/90 flex-row items-center px-4 h-14 rounded-xl shadow-md mb-6 border border-white/30 backdrop-blur-sm"
-            >
-              <MaterialIcons name="search" size={24} color="#5F6F64" />
-              <Text
-                className="flex-1 ml-3 text-herb-muted text-base font-poppins-regular"
-              >
-                Search for herbs, spices...
-              </Text>
-            </Pressable>
+        <View style={{ paddingTop: top }} className="px-5">
+          <View className="mb-6">
+            <Text className="text-herb-primary font-poppins-medium text-base">Welcome back,</Text>
+            <Text className="text-3xl font-poppins-bold text-herb-primaryDark">
+              {profile?.displayName || 'Herb Enthusiast'} 👋
+            </Text>
           </View>
           
-          <HeroSection />
+          <Pressable 
+            onPress={handleSearchPress}
+            className="bg-white flex-row items-center px-4 h-14 rounded-xl mb-6 border border-herb-divider/50"
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.06,
+              shadowRadius: 6,
+              elevation: 2
+            }}
+          >
+            <MaterialIcons name="search" size={24} color="#5F6F64" />
+            <Text className="flex-1 ml-3 text-herb-muted text-base font-poppins-regular">
+              Search for herbs, spices...
+            </Text>
+          </Pressable>
         </View>
         
-        <View className="bg-white pt-8 rounded-t-3xl mt-4"> 
+        <HeroSection />
+        
+        <View className="bg-white pt-8 rounded-t-3xl mt-4 shadow-inner"> 
           <PopularHerbsSection
             items={items}
             isLoading={itemsLoading}
@@ -180,7 +170,6 @@ export default function HomeScreen() {
           
           <WellnessTips />
         </View>
-        
       </Animated.ScrollView>
     </View>
   );
@@ -194,7 +183,7 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 100,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(229, 230, 228, 0.3)',
+    borderBottomColor: 'rgba(229, 230, 228, 0.2)',
     paddingHorizontal: 20,
     paddingBottom: 10,
   },

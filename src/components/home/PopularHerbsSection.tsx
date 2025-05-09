@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { FlatList, Pressable, ScrollView, Text, View } from 'react-native';
@@ -58,18 +58,44 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
           {Array.from({ length: 4 }).map((_, idx) => (
             <View
               key={idx}
-              className="bg-white rounded-2xl shadow-sm overflow-hidden border border-herb-divider"
-              style={{ width: cardWidth, marginRight: cardSpacing }}
+              className="bg-white rounded-2xl overflow-hidden border border-herb-divider/40 mr-3"
+              style={{ 
+                width: 100, 
+                paddingVertical: 10,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 3,
+                elevation: 1
+              }}
             >
-              <View className="w-full h-36 bg-herb-surface animate-pulse" />
-              <View className="p-3">
-                <View className="h-5 bg-herb-surface rounded-full w-3/4 mb-2 animate-pulse" />
-                <View className="h-4 bg-herb-surface rounded-full w-1/2 mb-2 animate-pulse" />
-                <View className="h-6 bg-herb-surface rounded-full w-1/3 mt-2 animate-pulse" />
-              </View>
+              <View className="h-4 bg-herb-surface/50 w-3/4 mx-auto rounded-full animate-pulse" />
             </View>
           ))}
         </ScrollView>
+        
+        <View className="flex-row flex-wrap px-5">
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <View
+              key={idx}
+              className="bg-white rounded-2xl overflow-hidden border border-herb-divider/40 mb-4 mx-2"
+              style={{ 
+                width: cardWidth - 4,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 5,
+                elevation: 2
+              }}
+            >
+              <View className="w-full h-36 bg-herb-surface/50 animate-pulse" />
+              <View className="p-3">
+                <View className="h-5 bg-herb-surface/50 rounded-full w-3/4 mb-2 animate-pulse" />
+                <View className="h-6 bg-herb-surface/50 rounded-full w-1/3 mt-2 animate-pulse" />
+              </View>
+            </View>
+          ))}
+        </View>
       </View>
     );
   }
@@ -80,8 +106,16 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
         <View className="flex-row justify-between items-center mb-4">
           <Text className="text-2xl font-poppins-bold text-herb-primaryDark">Popular Herbs</Text>
         </View>
-        <View className="bg-white p-6 rounded-2xl shadow-sm items-center justify-center border border-herb-divider">
-          <Ionicons name="search-outline" size={40} color="#5F6F64" />
+        <View className="bg-white p-6 rounded-2xl items-center justify-center border border-herb-divider/40"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 5,
+            elevation: 1
+          }}
+        >
+          <MaterialIcons name="search-off" size={40} color="#8D978F" />
           <Text className="text-herb-muted mt-3 text-center font-poppins-medium">No herbs match your selection.</Text>
           <Pressable 
             onPress={() => setSelectedCategory(null)}
@@ -103,7 +137,7 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
           className="flex-row items-center bg-herb-primary/10 px-3 py-1.5 rounded-full active:bg-herb-primary/20"
         >
           <Text className="text-herb-primary font-poppins-semibold mr-1 text-sm">View All</Text>
-          <Ionicons name="arrow-forward" size={14} color="#2B4D3F" />
+          <MaterialIcons name="arrow-forward" size={14} color="#2B4D3F" />
         </Pressable>
       </View>
       
@@ -113,18 +147,51 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
         contentContainerStyle={{ paddingHorizontal: 20 }}
         className="mb-5"
       >
+        <Pressable 
+          onPress={() => setSelectedCategory(null)}
+          className={`mr-3 px-4 py-2.5 rounded-full active:opacity-90 ${
+            !selectedCategory 
+              ? "bg-herb-primary shadow-sm" 
+              : "bg-white border border-herb-divider/40"
+          }`}
+          style={!selectedCategory ? {
+            shadowColor: '#184229',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.1,
+            shadowRadius: 3,
+            elevation: 2
+          } : {}}
+        >
+          <Text 
+            className={`font-poppins-medium text-sm ${
+              !selectedCategory 
+                ? "text-white" 
+                : "text-herb-primaryDark"
+            }`}
+          >
+            All
+          </Text>
+        </Pressable>
+        
         {categories.map(category => (
           <Pressable 
             key={category}
             onPress={() => setSelectedCategory(category === selectedCategory ? null : category)}
-            className={`mr-3 px-4 py-2.5 rounded-full active:opacity-90 shadow-sm ${
+            className={`mr-3 px-4 py-2.5 rounded-full active:opacity-90 ${
               category === selectedCategory 
-                ? "bg-herb-primary" 
-                : "bg-white border border-herb-divider"
+                ? "bg-herb-primary shadow-sm" 
+                : "bg-white border border-herb-divider/40"
             }`}
+            style={category === selectedCategory ? {
+              shadowColor: '#184229',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.1,
+              shadowRadius: 3,
+              elevation: 2
+            } : {}}
           >
             <Text 
-              className={`font-poppins-medium text-sm ${
+              className={`font-poppins-medium text-sm capitalize ${
                 category === selectedCategory 
                   ? "text-white" 
                   : "text-herb-primaryDark"

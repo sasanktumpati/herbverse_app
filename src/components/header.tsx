@@ -36,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({
   const containerBaseClasses = "w-full px-4 pb-3 z-10";
   const modeClasses = transparent 
     ? "bg-transparent" 
-    : `bg-white ${showBorder ? 'border-b border-herb-divider' : ''}`;
+    : `bg-white ${showBorder ? 'border-b border-herb-divider/40' : ''}`;
 
   return (
     <View 
@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
     >
       {transparent && (
         <BlurView 
-          intensity={70} 
+          intensity={60} 
           tint="light" 
           className="absolute inset-0"
         />
@@ -55,10 +55,15 @@ const Header: React.FC<HeaderProps> = ({
         {showBack ? (
           <Pressable 
             onPress={() => backAction ? backAction() : router.back()}
-            className="w-10 h-10 items-center justify-center rounded-full active:bg-herb-surface"
-            hitSlop={12}
+            className="w-10 h-10 items-center justify-center rounded-full active:bg-herb-surface/50"
+            style={{
+              shadowColor: transparent ? '#000' : 'transparent',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: transparent ? 0.1 : 0,
+              shadowRadius: 4,
+            }}
           >
-            <MaterialIcons name="arrow-back-ios" size={22} color={iconColor} />
+            <MaterialIcons name="arrow-back" size={24} color={iconColor} />
           </Pressable>
         ) : (
           <View className="w-10" />
@@ -87,8 +92,13 @@ const Header: React.FC<HeaderProps> = ({
         {rightAction && rightIcon ? (
           <Pressable 
             onPress={rightAction}
-            className="w-10 h-10 items-center justify-center rounded-full active:bg-herb-surface"
-            hitSlop={12}
+            className="w-10 h-10 items-center justify-center rounded-full active:bg-herb-surface/50"
+            style={{
+              shadowColor: transparent ? '#000' : 'transparent',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: transparent ? 0.1 : 0,
+              shadowRadius: 4,
+            }}
           >
             <MaterialIcons name={rightIcon} size={24} color={iconColor} />
           </Pressable>

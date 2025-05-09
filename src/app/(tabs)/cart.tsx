@@ -21,13 +21,22 @@ const CartItemDisplay: React.FC<CartItemDisplayProps> = React.memo(({ item, onUp
   }, [item.quantity]);
 
   return (
-    <View className="flex-row items-center bg-white p-3.5 mb-3.5 rounded-xl shadow-md border border-herb-divider/70">
-      <View className="bg-herb-surface rounded-lg overflow-hidden mr-3.5">
+    <View 
+      className="flex-row items-center bg-white p-4 mb-4 rounded-xl border border-herb-divider/40"
+      style={{
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 5,
+        elevation: 2
+      }}
+    >
+      <View className="bg-herb-surface/30 rounded-lg overflow-hidden mr-3.5">
         {item.imageUrl ? (
           <Image source={{ uri: item.imageUrl }} className="w-24 h-24 rounded-lg" resizeMode="cover" />
         ) : (
-          <View className="w-24 h-24 rounded-lg items-center justify-center bg-herb-surface/50">
-            <Ionicons name="leaf-outline" size={36} color="#3E6643" />
+          <View className="w-24 h-24 rounded-lg items-center justify-center bg-herb-surface/30">
+            <MaterialIcons name="eco" size={32} color="#3E6643" />
           </View>
         )}
       </View>
@@ -42,7 +51,7 @@ const CartItemDisplay: React.FC<CartItemDisplayProps> = React.memo(({ item, onUp
               onUpdateQuantity(item.id, next);
             }}
             disabled={localQuantity <= 0}
-            className="p-2 bg-herb-surface rounded-full active:bg-herb-divider"
+            className="w-9 h-9 bg-herb-surface/60 rounded-full items-center justify-center active:bg-herb-divider border border-herb-divider/40"
           >
             <MaterialIcons name="remove" size={20} color="#2B4D3F" />
           </Pressable>
@@ -53,7 +62,7 @@ const CartItemDisplay: React.FC<CartItemDisplayProps> = React.memo(({ item, onUp
               setLocalQuantity(next);
               onUpdateQuantity(item.id, next);
             }}
-            className="p-2 bg-herb-surface rounded-full active:bg-herb-divider"
+            className="w-9 h-9 bg-herb-surface/60 rounded-full items-center justify-center active:bg-herb-divider border border-herb-divider/40"
           >
             <MaterialIcons name="add" size={20} color="#2B4D3F" />
           </Pressable>
@@ -61,7 +70,7 @@ const CartItemDisplay: React.FC<CartItemDisplayProps> = React.memo(({ item, onUp
       </View>
       <Pressable 
         onPress={() => onRemoveItem(item.id)} 
-        className="p-2.5 rounded-full active:bg-red-100 self-start ml-2"
+        className="p-2.5 rounded-full active:bg-red-50 self-start ml-2 border border-transparent active:border-red-200"
         hitSlop={10}
       >
         <MaterialIcons name="delete-outline" size={24} color="#F44336" />
@@ -73,7 +82,7 @@ const CartItemDisplay: React.FC<CartItemDisplayProps> = React.memo(({ item, onUp
          prevProps.item.price === nextProps.item.price && 
          prevProps.item.name === nextProps.item.name &&
          prevProps.item.imageUrl === nextProps.item.imageUrl &&
-         true;
+         prevProps.item.quantity === nextProps.item.quantity;
 });
 
 CartItemDisplay.displayName = 'CartItemDisplay';

@@ -1,6 +1,5 @@
 import { FocusAwareStatusBar } from '@/components/common/status-bar';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useRouter } from 'expo-router';
 import React from 'react';
 import {
@@ -124,19 +123,16 @@ export default function ProfileScreen() {
           contentContainerStyle={{ paddingBottom: bottom + 20 }}
           showsVerticalScrollIndicator={false}
         >
-          <LinearGradient
-            colors={['rgba(78, 124, 95, 0.8)', 'rgba(62, 102, 67, 0.9)']}
-            className="rounded-b-3xl px-6 pt-6 pb-8"
-          >
+          <View className="bg-white px-6 pt-8 pb-10 mb-5 border-b border-herb-divider/30">
             <View className="items-center">
-              <View className="mb-4">
+              <View className="mb-5">
                 {profile?.photoURL ? (
                   <Image 
                     source={{ uri: profile.photoURL }} 
-                    className="w-28 h-28 rounded-full border-4 border-white"
+                    className="w-28 h-28 rounded-full border-[3px] border-herb-primaryLight/30"
                   />
                 ) : (
-                  <View className="w-28 h-28 rounded-full bg-white items-center justify-center border-4 border-herb-primaryLight">
+                  <View className="w-28 h-28 rounded-full bg-herb-surface items-center justify-center border-[3px] border-herb-primaryLight/30">
                     <Text className="text-5xl text-herb-primary font-light">
                       {profile?.displayName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
                     </Text>
@@ -144,41 +140,40 @@ export default function ProfileScreen() {
                 )}
                 
                 <TouchableOpacity 
-                  className="absolute right-0 bottom-0 bg-white w-9 h-9 rounded-full items-center justify-center shadow-md"
+                  className="absolute right-0 bottom-0 bg-herb-primary w-9 h-9 rounded-full items-center justify-center shadow-md"
                   onPress={() => showAlert({ title: 'Coming Soon', message: 'Profile photo upload will be added soon', type: 'info', buttons: [{text: 'OK'}] })}
                 >
-                  <MaterialIcons name="camera-alt" size={18} color="#3E6643" />
+                  <MaterialIcons name="camera-alt" size={18} color="white" />
                 </TouchableOpacity>
               </View>
               
-              <Text className="text-white font-poppins-bold text-2xl">
+              <Text className="text-herb-primaryDark font-poppins-bold text-2xl">
                 {profile?.displayName || 'User'}
               </Text>
               
-              <Text className="text-white/90 font-poppins mt-1">
+              <Text className="text-herb-muted font-poppins mt-1">
                 {profile?.email || user?.email || 'No email available'}
               </Text>
 
               {isVendor && (
-                <View className="mt-2 bg-herb-secondary/20 px-3 py-1 rounded-full">
-                  <Text className="text-sm font-poppins-medium text-herb-secondary-dark">Vendor Account</Text>
+                <View className="mt-3 bg-herb-primary/10 px-4 py-1.5 rounded-full">
+                  <Text className="text-sm font-poppins-medium text-herb-primary">Vendor Account</Text>
                 </View>
               )}
-              
             </View>
-          </LinearGradient>
+          </View>
           
-          <View className="flex-row px-4 -mt-8">
-            <View className="flex-1 mr-2 bg-white rounded-xl p-4 shadow-lg border border-herb-divider/70">
-              <View className="rounded-lg bg-amber-100 w-11 h-11 items-center justify-center mb-2.5">
+          <View className="flex-row px-4 mb-6">
+            <View className="flex-1 mr-2 bg-white rounded-xl p-4 shadow-sm border border-herb-divider/30">
+              <View className="rounded-lg bg-amber-50 w-11 h-11 items-center justify-center mb-2.5">
                 <MaterialIcons name="local-shipping" size={20} color="#F59E0B" />
               </View>
               <Text className="text-lg font-poppins-bold text-herb-primaryDark">{activeCount}</Text>
               <Text className="text-herb-muted font-poppins text-sm leading-tight">Active Orders</Text>
             </View>
             
-            <View className="flex-1 ml-2 bg-white rounded-xl p-4 shadow-lg border border-herb-divider/70">
-              <View className="rounded-lg bg-green-100 w-11 h-11 items-center justify-center mb-2.5">
+            <View className="flex-1 ml-2 bg-white rounded-xl p-4 shadow-sm border border-herb-divider/30">
+              <View className="rounded-lg bg-green-50 w-11 h-11 items-center justify-center mb-2.5">
                 <MaterialIcons name="check-circle" size={20} color="#10B981" />
               </View>
               <Text className="text-lg font-poppins-bold text-herb-primaryDark">{completedCount}</Text>
@@ -186,7 +181,7 @@ export default function ProfileScreen() {
             </View>
           </View>
           
-          <View className="mt-6 mx-4 bg-white rounded-xl overflow-hidden shadow-lg border border-herb-divider/70">
+          <View className="mx-4 bg-white rounded-xl overflow-hidden shadow-sm border border-herb-divider/30">
             {menuItems.map((item, index) => (
               <React.Fragment key={item.label}>
                 <Pressable 
@@ -195,16 +190,16 @@ export default function ProfileScreen() {
                 >
                   <View 
                     className="w-10 h-10 rounded-lg items-center justify-center mr-4"
-                    style={{ backgroundColor: `${item.color}1A` }}
+                    style={{ backgroundColor: `${item.color}12` }}
                   >
                     <MaterialIcons name={item.icon as keyof typeof MaterialIcons.glyphMap} size={22} color={item.color} />
                   </View>
                   <Text className="flex-1 text-base font-poppins-medium text-herb-textPrimary">{item.label}</Text>
-                  <MaterialIcons name="chevron-right" size={24} color="#A0AEC0" />
+                  <MaterialIcons name="chevron-right" size={22} color="#A0AEC0" />
                 </Pressable>
                 
                 {index < menuItems.length - 1 && (
-                  <View className="h-[1px] bg-herb-divider ml-16 mr-5" />
+                  <View className="h-[1px] bg-herb-divider/50 ml-16 mr-5" />
                 )}
               </React.Fragment>
             ))}
@@ -214,16 +209,16 @@ export default function ProfileScreen() {
             <Pressable
               onPress={confirmLogout}
               disabled={loadingStates.signOut}
-              className="flex-row items-center justify-center bg-red-500 py-3.5 rounded-xl active:bg-red-600 shadow-md"
+              className="flex-row items-center justify-center bg-white border border-red-500 py-3.5 rounded-xl active:bg-red-50 shadow-sm"
             >
-              <MaterialIcons name="logout" size={20} color="white" />
-              <Text className="text-white font-poppins-semibold text-base ml-2.5">
+              <MaterialIcons name="logout" size={20} color="#EF4444" />
+              <Text className="text-red-500 font-poppins-semibold text-base ml-2.5">
                 {loadingStates.signOut ? 'Logging out...' : 'Log Out'}
               </Text>
             </Pressable>
           </View>
           
-          <View className="items-center mb-6 mt-2">
+          <View className="items-center mb-6 mt-4">
             <Text className="text-herb-muted font-poppins text-xs">
               HerbVerse App v{version}
             </Text>
