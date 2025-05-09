@@ -13,12 +13,16 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useAuthStore from '../../../src/stores/authStore';
 import useUIStore from '../../../src/stores/uiStore';
+import useOrdersStore from '../../../src/stores/ordersStore';
 
 export default function ProfileScreen() {
   const { bottom } = useSafeAreaInsets();
   const { user, profile, signOut, loadingStates } = useAuthStore();
   const router = useRouter();
   const showAlert = useUIStore((state) => state.showAlert);
+  const orders = useOrdersStore((state) => state.orders);
+  const activeCount = orders.filter(o => ['pending','processing','shipped'].includes(o.status)).length;
+  const completedCount = orders.filter(o => o.status === 'delivered').length;
 
   const handleLogout = async () => {
     try {
@@ -154,7 +158,7 @@ export default function ProfileScreen() {
               <View className="rounded-lg bg-amber-100 w-11 h-11 items-center justify-center mb-2.5">
                 <MaterialIcons name="local-shipping" size={20} color="#F59E0B" />
               </View>
-              <Text className="text-lg font-poppins-bold text-herb-primaryDark">0</Text>
+              <Text className="text-lg font-poppins-bold text-herb-primaryDark">{activeCount}</Text>
               <Text className="text-herb-muted font-poppins text-sm leading-tight">Active Orders</Text>
             </View>
             
@@ -162,7 +166,7 @@ export default function ProfileScreen() {
               <View className="rounded-lg bg-green-100 w-11 h-11 items-center justify-center mb-2.5">
                 <MaterialIcons name="check-circle" size={20} color="#10B981" />
               </View>
-              <Text className="text-lg font-poppins-bold text-herb-primaryDark">0</Text>
+              <Text className="text-lg font-poppins-bold text-herb-primaryDark">{completedCount}</Text>
               <Text className="text-herb-muted font-poppins text-sm leading-tight">Completed</Text>
             </View>
           </View>
