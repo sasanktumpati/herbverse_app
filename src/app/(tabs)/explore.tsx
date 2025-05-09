@@ -86,7 +86,7 @@ export default function ExploreScreen() {
     <>
       <FocusAwareStatusBar />
       <View
-        style={{ flex: 1, backgroundColor: '#F7F9F7', paddingBottom: top }}
+        style={{ flex: 1, backgroundColor: '#F0F8EA', paddingBottom: top }}
       >
         <View style={{ paddingTop: top }} className="bg-white shadow-sm">
           <View className="px-5 pt-5 pb-3">
