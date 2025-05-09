@@ -121,7 +121,6 @@ const TabItem: React.FC<TabItemProps> = ({
     <Pressable 
       onPress={onPress} 
       className="flex-1 h-full items-center justify-center"
-      android_ripple={{color: 'rgba(0,0,0,0.1)', borderless: true, radius: 24}}
     >
       <Animated.View className="items-center justify-center py-2 px-3 rounded-2xl">
         <View className="items-center justify-center mb-0.5 relative">
