@@ -37,8 +37,8 @@ function TabItem({ isFocused, label, routeName, onPress, badge = 0 }) {
           />
           {badge > 0 && (
             <View className="absolute -top-1.5 -right-3 bg-orange-500 rounded-[10px] min-w-[18px] h-[18px] items-center justify-center border-[1.5px] border-white shadow-sm">
-              <Text className="text-white font-poppins-medium text-xs">
-                {badge > 9 ? '9+' : badge}
+              <Text className="text-white font-poppins-medium text-xs" numberOfLines={1} adjustsFontSizeToFit>
+                {badge > 99 ? '99+' : badge}
               </Text>
             </View>
           )}
