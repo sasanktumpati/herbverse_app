@@ -43,16 +43,23 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
 
   if (isLoading) {
     return (
-      <View className="mb-8 px-5">
-        <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-2xl font-poppins-bold text-herb-primaryDark">Popular Herbs</Text>
+      <View className="mb-8">
+        <View className="flex-row justify-between items-center px-5 mb-4">
+          <Text className="text-2xl font-poppins-bold text-herb-primaryDark">
+            Popular Herbs
+          </Text>
         </View>
-        <View className="px-5 flex-row flex-wrap justify-between">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          className="mb-5"
+        >
           {Array.from({ length: 4 }).map((_, idx) => (
-            <View 
-              key={idx} 
-              className="bg-white rounded-2xl shadow-sm mb-4 overflow-hidden border border-herb-divider"
-              style={{ width: cardWidth }}
+            <View
+              key={idx}
+              className="bg-white rounded-2xl shadow-sm overflow-hidden border border-herb-divider"
+              style={{ width: cardWidth, marginRight: cardSpacing }}
             >
               <View className="w-full h-36 bg-herb-surface animate-pulse" />
               <View className="p-3">
@@ -62,7 +69,7 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
               </View>
             </View>
           ))}
-        </View>
+        </ScrollView>
       </View>
     );
   }
