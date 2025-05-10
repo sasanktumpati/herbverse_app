@@ -116,5 +116,5 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <InnerRootLayout />
     </SafeAreaProvider>
-  );
+    );
 }

@@ -9,12 +9,15 @@ import {
   Dimensions,
   FlatList,
   Pressable,
+  RefreshControl,
   ScrollView,
   Text,
   TextInput,
   View,
+  ListRenderItem,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { FadeIn, FadeInDown, Layout } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
 const numColumns = 2;
@@ -23,6 +26,8 @@ const listPaddingHorizontal = 16;
 
 const cardWidth = (width - (listPaddingHorizontal * 2) - (cardMarginHorizontal * (numColumns - 1))) / numColumns;
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<Item>);
+
 export default function ExploreScreen() {
   const { top } = useSafeAreaInsets();
   const { items, fetchItems, isLoading: itemsLoading, error: itemsError } = useItemsStore();
@@ -30,6 +35,7 @@ export default function ExploreScreen() {
 
   const [searchQuery, setSearchQuery] = useState(params.query || '');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
   
   const searchInputRef = useRef<TextInput>(null);
 
@@ -71,10 +77,20 @@ export default function ExploreScreen() {
     return result;
   }, [items, searchQuery, selectedCategory]);
 
-  const renderItem = ({ item }: { item: Item }) => (
-    <View style={{ width: cardWidth }}>
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchItems();
+    setRefreshing(false);
+  };
+
+  const renderItem: ListRenderItem<Item> = ({ item, index }) => (
+    <Animated.View 
+      entering={FadeInDown.delay(index * 100).springify()}
+      layout={Layout.springify()}
+      style={{ width: cardWidth }}
+    >
       <HerbCard item={item} width={cardWidth} />
-    </View>
+    </Animated.View>
   );
 
   const flatListColumnWrapperStyle = {
@@ -86,26 +102,50 @@ export default function ExploreScreen() {
     <>
       <FocusAwareStatusBar />
       <View
-        style={{ flex: 1, backgroundColor: '#FFFFF' }}
+        style={{ flex: 1, backgroundColor: '#FFFFFF' }}
       >
-        <View className="bg-white shadow-sm">
+        <Animated.View 
+          entering={FadeIn}
+          className="bg-white shadow-sm"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 8,
+            elevation: 3,
+          }}
+        >
           <View className="px-5 pt-5 pb-3">
             <Text className="text-3xl font-poppins-bold text-herb-primaryDark mb-4">
               Explore Herbs
             </Text>
-            <View className="bg-white flex-row items-center px-4 h-14 rounded-xl shadow-md border border-herb-divider/70">
+            <View 
+              className="bg-herb-surface flex-row items-center px-4 h-14 rounded-xl border border-herb-divider/50"
+              style={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 4,
+                elevation: 1
+              }}
+            >
               <MaterialIcons name="search" size={24} color="#5F6F64" />
               <TextInput
                 ref={searchInputRef}
-                className="flex-1 ml-3 text-herb-textPrimary text-base font-poppins-regular h-full"
+                className="flex-1 ml-3 text-herb-textPrimary text-base font-poppins-regular"
                 placeholder="Search for herbs, categories..."
                 placeholderTextColor="#A0AEC0"
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 returnKeyType="search"
+                style={{ height: '100%', paddingVertical: 0 }}
               />
               {searchQuery ? (
-                <Pressable onPress={() => setSearchQuery('')} hitSlop={10}>
+                <Pressable 
+                  onPress={() => setSearchQuery('')} 
+                  hitSlop={10}
+                  className="active:opacity-70"
+                >
                   <MaterialIcons name="close" size={22} color="#5F6F64" />
                 </Pressable>
               ) : null}
@@ -113,7 +153,7 @@ export default function ExploreScreen() {
           </View>
 
           {categories.length > 0 && (
-            <View className="border-b border-herb-divider/70">
+            <View className="border-b border-herb-divider/50">
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -121,11 +161,18 @@ export default function ExploreScreen() {
               >
                 <Pressable
                   onPress={() => setSelectedCategory(null)}
-                  className={`mr-2.5 px-4 py-2 rounded-full border ${
+                  className={`mr-2.5 px-4 py-2 rounded-full border active:opacity-90 ${
                     !selectedCategory
-                      ? 'bg-herb-primary border-herb-primary'
+                      ? 'bg-herb-primary border-herb-primary shadow'
                       : 'bg-herb-surface border-herb-divider'
                   }`}
+                  style={!selectedCategory ? {
+                    shadowColor: '#184229',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.15,
+                    shadowRadius: 3,
+                    elevation: 2
+                  } : {}}
                 >
                   <Text
                     className={`text-sm font-poppins-medium ${
@@ -139,11 +186,18 @@ export default function ExploreScreen() {
                   <Pressable
                     key={cat}
                     onPress={() => setSelectedCategory(cat === selectedCategory ? null : cat)}
-                    className={`mr-2.5 px-4 py-2 rounded-full border ${
+                    className={`mr-2.5 px-4 py-2 rounded-full border active:opacity-90 ${
                       cat === selectedCategory
-                        ? 'bg-herb-primary border-herb-primary'
+                        ? 'bg-herb-primary border-herb-primary shadow'
                         : 'bg-herb-surface border-herb-divider'
                     }`}
+                    style={cat === selectedCategory ? {
+                      shadowColor: '#184229',
+                      shadowOffset: { width: 0, height: 1 },
+                      shadowOpacity: 0.15,
+                      shadowRadius: 3,
+                      elevation: 2
+                    } : {}}
                   >
                     <Text
                       className={`text-sm font-poppins-medium capitalize ${
@@ -157,7 +211,7 @@ export default function ExploreScreen() {
               </ScrollView>
             </View>
           )}
-        </View>
+        </Animated.View>
 
         {itemsLoading && items.length === 0 ? (
           <View className="flex-1 items-center justify-center">
@@ -165,7 +219,10 @@ export default function ExploreScreen() {
             <Text className="mt-3 font-poppins text-herb-muted">Loading herbs...</Text>
           </View>
         ) : itemsError ? (
-          <View className="flex-1 items-center justify-center px-6">
+          <Animated.View 
+            entering={FadeInDown.springify()}
+            className="flex-1 items-center justify-center px-6"
+          >
             <MaterialIcons name="error-outline" size={48} color="#F28C0F" />
             <Text className="mt-3 text-xl font-poppins-semibold text-herb-error text-center">
               Failed to Load Herbs
@@ -179,9 +236,12 @@ export default function ExploreScreen() {
             >
               <Text className="text-white font-poppins-semibold text-lg">Retry</Text>
             </Pressable>
-          </View>
+          </Animated.View>
         ) : filteredItems.length === 0 ? (
-          <View className="flex-1 items-center justify-center px-6">
+          <Animated.View 
+            entering={FadeInDown.springify()}
+            className="flex-1 items-center justify-center px-6"
+          >
             <MaterialIcons name="search-off" size={48} color="#8D978F" />
             <Text className="mt-3 text-xl font-poppins-semibold text-herb-primaryDark text-center">
               No Herbs Found
@@ -191,20 +251,24 @@ export default function ExploreScreen() {
                 ? "Try adjusting your search or explore all items."
                 : "There are no herbs available at the moment."}
             </Text>
-            {searchQuery && (
+            {(searchQuery || selectedCategory) && (
               <Pressable
-                onPress={() => setSearchQuery('')}
+                onPress={() => {
+                  setSearchQuery('');
+                  setSelectedCategory(null);
+                }}
                 className="mt-6 bg-herb-surface py-3 px-8 rounded-xl border border-herb-divider active:bg-herb-divider"
               >
-                <Text className="text-herb-primary font-poppins-semibold text-lg">Clear Search</Text>
+                <Text className="text-herb-primary font-poppins-semibold text-lg">Clear All Filters</Text>
               </Pressable>
             )}
-          </View>
+          </Animated.View>
         ) : (
-          <FlatList
+          <AnimatedFlatList
+            entering={FadeIn}
             data={filteredItems}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item: Item) => item.id}
             numColumns={numColumns}
             contentContainerStyle={{
               paddingHorizontal: listPaddingHorizontal - (cardMarginHorizontal / 2),
@@ -213,6 +277,14 @@ export default function ExploreScreen() {
             }}
             showsVerticalScrollIndicator={false}
             columnWrapperStyle={flatListColumnWrapperStyle}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                tintColor="#2B4D3F"
+                colors={['#2B4D3F']}
+              />
+            }
           />
         )}
       </View>

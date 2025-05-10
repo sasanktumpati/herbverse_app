@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FlatList, Pressable, ScrollView, Text, View } from 'react-native';
 import { Item } from '../../stores';
 import HerbCard from './HerbCard';
@@ -27,6 +27,10 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
   cardSpacing
 }) => {
   const router = useRouter();
+
+  const handleCategorySelect = useCallback((category: string | null) => {
+    setSelectedCategory(category);
+  }, [setSelectedCategory]);
 
   const pairedData = React.useMemo(() => {
     const result: Item[][] = [];
@@ -118,7 +122,7 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
           <MaterialIcons name="search-off" size={40} color="#8D978F" />
           <Text className="text-herb-muted mt-3 text-center font-poppins-medium">No herbs match your selection.</Text>
           <Pressable 
-            onPress={() => setSelectedCategory(null)}
+            onPress={() => handleCategorySelect(null)}
             className="mt-3 bg-herb-primary px-4 py-2 rounded-full active:bg-herb-primaryDark"
           >
             <Text className="text-white font-poppins-medium">Clear Filters</Text>
@@ -148,7 +152,7 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
         className="mb-5"
       >
         <Pressable 
-          onPress={() => setSelectedCategory(null)}
+          onPress={() => handleCategorySelect(null)}
           className={`mr-3 px-4 py-2.5 rounded-full active:opacity-90 ${
             !selectedCategory 
               ? "bg-herb-primary shadow-sm" 
@@ -176,7 +180,7 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
         {categories.map(category => (
           <Pressable 
             key={category}
-            onPress={() => setSelectedCategory(category === selectedCategory ? null : category)}
+            onPress={() => handleCategorySelect(category === selectedCategory ? null : category)}
             className={`mr-3 px-4 py-2.5 rounded-full active:opacity-90 ${
               category === selectedCategory 
                 ? "bg-herb-primary shadow-sm" 
@@ -215,7 +219,7 @@ const PopularHerbsSection: React.FC<PopularHerbsSectionProps> = ({
             )}
           </View>
         )}
-        keyExtractor={(itemPair) => itemPair[0].id}
+        keyExtractor={(itemPair) => itemPair[0]?.id || 'empty'}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ 
