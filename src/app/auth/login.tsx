@@ -148,10 +148,10 @@ export default function LoginScreen() {
               resizeMode="contain"
               style={{ shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } }}
             />
-            <Text className="text-4xl font-extrabold text-herb-primaryDark mb-1 tracking-tight">
+            <Text className="text-4xl font-poppins-bold text-herb-primaryDark mb-1 tracking-tight">
               Welcome Back
             </Text>
-            <Text className="text-base text-herb-muted mb-2">
+            <Text className="text-base text-herb-muted font-poppins-regular mb-2">
               Login to your HerbVerse account
             </Text>
           </View>
@@ -173,11 +173,11 @@ export default function LoginScreen() {
             className="w-full"
           >
             <View className="mb-6">
-              <Text className="text-sm font-semibold text-herb-textPrimary mb-2 ml-1">Email</Text>
+              <Text className="text-sm font-poppins-medium text-herb-textPrimary mb-2 ml-1">Email</Text>
               <View className="flex-row items-center border border-herb-divider rounded-xl px-4 h-14 bg-herb-bgInput focus-within:border-herb-primary transition-all duration-150">
                 <MaterialIcons name="email" size={20} color="#5F6F64" className="mr-2" />
                 <TextInput
-                  className="flex-1 text-base text-herb-textPrimary py-3"
+                  className="flex-1 text-base text-herb-textPrimary py-3 font-poppins-regular"
                   placeholder="you@example.com"
                   placeholderTextColor="#A0AEC0"
                   value={email}
@@ -194,11 +194,11 @@ export default function LoginScreen() {
             </View>
 
             <View className="mb-4">
-              <Text className="text-sm font-semibold text-herb-textPrimary mb-2 ml-1">Password</Text>
+              <Text className="text-sm font-poppins-medium text-herb-textPrimary mb-2 ml-1">Password</Text>
               <View className="flex-row items-center border border-herb-divider rounded-xl px-4 h-14 bg-herb-bgInput focus-within:border-herb-primary transition-all duration-150">
                 <MaterialIcons name="lock" size={20} color="#5F6F64" className="mr-2" /> 
                 <TextInput
-                  className="flex-1 text-base text-herb-textPrimary py-3"
+                  className="flex-1 text-base text-herb-textPrimary py-3 font-poppins-regular"
                   placeholder="••••••••"
                   placeholderTextColor="#A0AEC0"
                   value={password}
@@ -227,14 +227,14 @@ export default function LoginScreen() {
                 onPress={() => showAlert({ title: "Forgot Password", message: "Forgot password feature coming soon!", type: 'info', buttons: [{ text: 'OK' }] })}
                 activeOpacity={0.7}
               >
-                <Text className="text-herb-primary text-sm font-medium">Forgot password?</Text>
+                <Text className="text-herb-primary text-sm font-poppins-medium">Forgot password?</Text>
               </TouchableOpacity>
             </View>
 
             {error && (
               <View className="flex-row items-center bg-red-50 border border-red-200 rounded-lg p-3 mb-5 mt-2">
                 <MaterialIcons name="error-outline" size={18} color="#DC2626" /> 
-                <Text className="text-red-700 ml-2 flex-1 text-sm">{error.message}</Text>
+                <Text className="text-red-700 ml-2 flex-1 text-sm font-poppins-regular">{error.message}</Text>
               </View>
             )}
 
@@ -254,7 +254,7 @@ export default function LoginScreen() {
               {isLoading ? (
                 <ActivityIndicator color="#FFFFFF" size="small" />
               ) : (
-                <Text className="text-white font-semibold text-lg tracking-wide">Login</Text>
+                <Text className="text-white font-poppins-semibold text-lg tracking-wide">Login</Text>
               )}
             </TouchableOpacity>
 
@@ -274,13 +274,13 @@ export default function LoginScreen() {
               {isLoading ? (
                 <ActivityIndicator color="#FFFFFF" size="small" />
               ) : (
-                <Text className="text-white font-semibold text-lg tracking-wide">Login as Vendor</Text>
+                <Text className="text-white font-poppins-semibold text-lg tracking-wide">Login as Vendor</Text>
               )}
             </TouchableOpacity>
 
             <View className="flex-row items-center my-4">
               <View className="flex-1 h-px bg-gray-300" />
-              <Text className="px-2 text-herb-muted text-sm">or continue with</Text>
+              <Text className="px-2 text-herb-muted text-sm font-poppins-regular">or continue with</Text>
               <View className="flex-1 h-px bg-gray-300" />
             </View>
             <View className="flex-row justify-center space-x-4 mb-4">
@@ -299,10 +299,10 @@ export default function LoginScreen() {
             </View>
 
             <View className="flex-row justify-center mt-2">
-              <Text className="text-herb-muted text-base">Don&apos;t have an account? </Text>
+              <Text className="text-herb-muted text-base font-poppins-regular">Don&apos;t have an account? </Text>
               <Link href="/auth/signup" asChild>
                 <TouchableOpacity disabled={isLoading} activeOpacity={0.7}>
-                  <Text className="text-herb-primary font-semibold text-base underline">Sign Up</Text>
+                  <Text className="text-herb-primary font-poppins-semibold text-base underline">Sign Up</Text>
                 </TouchableOpacity>
               </Link>
             </View>
